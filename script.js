@@ -60,6 +60,18 @@ let targetFrame2 = 0;
 let currentRenderedFrame2 = -1;
 
 // ==============================
+// THIRD CANVAS (images3/)
+// ==============================
+const canvas3 = document.getElementById('sequence-canvas-3');
+const context3 = canvas3 ? canvas3.getContext('2d') : null;
+const currentFrame3 = index => `images3/frame_${index.toString().padStart(4, '0')}.jpg`;
+
+const images3 = [];
+const airSequence3 = { frame: 0 };
+let targetFrame3 = 0;
+let currentRenderedFrame3 = -1;
+
+// ==============================
 // CANVAS DPI & DRAWING
 // ==============================
 const scaleCanvasDPI = (canvas, context) => {
@@ -72,6 +84,7 @@ const scaleCanvasDPI = (canvas, context) => {
 const trackAllDevicePixelRatios = () => {
     if(canvas1) scaleCanvasDPI(canvas1, context1);
     if(canvas2) scaleCanvasDPI(canvas2, context2);
+    if(canvas3) scaleCanvasDPI(canvas3, context3);
 };
 
 const drawCoverImage = (img, ctx, canvas, frameIndex, label) => {
@@ -172,6 +185,7 @@ const preloadSequenceBatched = (images, currentFrameFn, context, canvas, label, 
 const preloadAllSequences = () => {
     preloadSequenceBatched(images1, currentFrame1, context1, canvas1, "HERO");
     preloadSequenceBatched(images2, currentFrame2, context2, canvas2, "JOURNEY");
+    preloadSequenceBatched(images3, currentFrame3, context3, canvas3, "VISION");
 };
 
 // ==============================
@@ -230,6 +244,35 @@ const calculateScrollSequences = () => {
             }
         });
     }
+
+    // Third Sequence
+    const container3 = document.querySelector('.scroll-sequence-container-3');
+    if (container3) {
+        const rect3 = container3.getBoundingClientRect();
+        const absoluteTop3 = rect3.top + window.scrollY;
+        const container3Height = container3.scrollHeight - viewportHeight;
+        let fraction3 = (scrollTop - absoluteTop3) / container3Height;
+        fraction3 = Math.max(0, Math.min(1, fraction3));
+        targetFrame3 = Math.min(totalFrames - 1, Math.floor(fraction3 * totalFrames));
+
+        const overlays3 = [
+            document.getElementById('journey-overlay-6'),
+            document.getElementById('journey-overlay-7'),
+            document.getElementById('journey-overlay-8'),
+            document.getElementById('journey-overlay-9'),
+            document.getElementById('journey-overlay-10'),
+        ];
+        overlays3.forEach((el, idx) => {
+            if (!el) return;
+            const start = idx * 0.18;
+            const end = start + 0.22;
+            if (fraction3 >= start && fraction3 <= end) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    }
 };
 
 // ==============================
@@ -260,6 +303,20 @@ const globalRenderLoop = () => {
             if (readyIndex2 !== -1 && readyIndex2 !== currentRenderedFrame2) {
                 drawCoverImage(images2[readyIndex2], context2, canvas2, readyIndex2 + 1, "JOURNEY");
                 currentRenderedFrame2 = readyIndex2;
+            }
+        }
+    }
+
+    // Third Sequence
+    const delta3 = targetFrame3 - airSequence3.frame;
+    if (Math.abs(delta3) > 0.05) {
+        airSequence3.frame += delta3 * 0.15;
+        const rounded3 = Math.round(airSequence3.frame);
+        if (rounded3 !== currentRenderedFrame3) {
+            const readyIndex3 = findNearestLoadedFrame(images3, rounded3);
+            if (readyIndex3 !== -1 && readyIndex3 !== currentRenderedFrame3) {
+                drawCoverImage(images3[readyIndex3], context3, canvas3, readyIndex3 + 1, "VISION");
+                currentRenderedFrame3 = readyIndex3;
             }
         }
     }
@@ -315,6 +372,7 @@ window.addEventListener('resize', () => {
     trackAllDevicePixelRatios();
     if(images1[Math.round(airSequence1.frame)]) drawCoverImage(images1[Math.round(airSequence1.frame)], context1, canvas1, Math.round(airSequence1.frame) + 1, "HERO");
     if(images2[Math.round(airSequence2.frame)]) drawCoverImage(images2[Math.round(airSequence2.frame)], context2, canvas2, Math.round(airSequence2.frame) + 1, "JOURNEY");
+    if(images3[Math.round(airSequence3.frame)]) drawCoverImage(images3[Math.round(airSequence3.frame)], context3, canvas3, Math.round(airSequence3.frame) + 1, "VISION");
 });
 
 window.addEventListener('scroll', () => {
