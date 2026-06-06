@@ -112,37 +112,66 @@ const drawCoverImage = (img, ctx, canvas, frameIndex, label) => {
 };
 
 // ==============================
-// FRAME PRELOADING
+// SMART BATCHED FRAME LOADER
 // ==============================
+const BATCH_SIZE = 8;
+const BATCH_DELAY = 60;
+
+const isImageReady = (img) => img && img.complete && img.naturalWidth > 0;
+
+const findNearestLoadedFrame = (images, targetIndex) => {
+    if (isImageReady(images[targetIndex])) return targetIndex;
+    // Search outward from target
+    let distance = 1;
+    while (distance < totalFrames) {
+        const forward = targetIndex + distance;
+        const backward = targetIndex - distance;
+        if (forward < totalFrames && isImageReady(images[forward])) return forward;
+        if (backward >= 0 && isImageReady(images[backward])) return backward;
+        distance++;
+    }
+    return -1;
+};
+
+const loadBatch = (images, currentFrameFn, start, end) => {
+    for (let i = start; i < end && i <= totalFrames; i++) {
+        const img = images[i - 1];
+        if (!img.src) img.src = currentFrameFn(i);
+    }
+};
+
+const preloadSequenceBatched = (images, currentFrameFn, context, canvas, label, onFirstReady) => {
+    // Initialize empty image slots
+    for (let i = 1; i <= totalFrames; i++) {
+        images.push(new Image());
+    }
+
+    // Load frame 1 immediately for instant display
+    const firstImg = images[0];
+    firstImg.src = currentFrameFn(1);
+    firstImg.onload = () => {
+        requestAnimationFrame(() => drawCoverImage(firstImg, context, canvas, 1, label));
+        if (onFirstReady) onFirstReady();
+    };
+    firstImg.onerror = () => {};
+
+    // Load remaining frames in small batches with delay
+    let currentBatch = 2;
+    const loadNextBatch = () => {
+        if (currentBatch > totalFrames) return;
+        const end = Math.min(currentBatch + BATCH_SIZE - 1, totalFrames);
+        loadBatch(images, currentFrameFn, currentBatch, end);
+        currentBatch = end + 1;
+        if (currentBatch <= totalFrames) {
+            setTimeout(loadNextBatch, BATCH_DELAY);
+        }
+    };
+    setTimeout(loadNextBatch, BATCH_DELAY);
+};
+
 const preloadAllSequences = () => {
-    let loadedCount1 = 0;
-    let loadedCount2 = 0;
-
-    for (let i = 1; i <= totalFrames; i++) {
-        const img = new Image();
-        img.src = currentFrame1(i);
-        img.onload = () => {
-            loadedCount1++;
-            if (loadedCount1 === 1) {
-                requestAnimationFrame(() => drawCoverImage(images1[0], context1, canvas1, 1, "HERO"));
-            }
-        };
-        img.onerror = () => loadedCount1++;
-        images1.push(img);
-    }
-
-    for (let i = 1; i <= totalFrames; i++) {
-        const img = new Image();
-        img.src = currentFrame2(i);
-        img.onload = () => {
-            loadedCount2++;
-            if (loadedCount2 === 1) {
-                requestAnimationFrame(() => drawCoverImage(images2[0], context2, canvas2, 1, "JOURNEY"));
-            }
-        };
-        img.onerror = () => loadedCount2++;
-        images2.push(img);
-    }
+    preloadSequenceBatched(images1, currentFrame1, context1, canvas1, "HERO");
+    preloadSequenceBatched(images2, currentFrame2, context2, canvas2, "JOURNEY");
 };
 
 // ==============================
@@ -207,23 +236,31 @@ const calculateScrollSequences = () => {
 // RENDER LOOP
 // ==============================
 const globalRenderLoop = () => {
+    // Hero Sequence
     const delta1 = targetFrame1 - airSequence1.frame;
     if (Math.abs(delta1) > 0.05) {
         airSequence1.frame += delta1 * 0.15;
         const rounded1 = Math.round(airSequence1.frame);
-        if (rounded1 !== currentRenderedFrame1 && images1[rounded1]) {
-            drawCoverImage(images1[rounded1], context1, canvas1, rounded1 + 1, "HERO");
-            currentRenderedFrame1 = rounded1;
+        if (rounded1 !== currentRenderedFrame1) {
+            const readyIndex1 = findNearestLoadedFrame(images1, rounded1);
+            if (readyIndex1 !== -1 && readyIndex1 !== currentRenderedFrame1) {
+                drawCoverImage(images1[readyIndex1], context1, canvas1, readyIndex1 + 1, "HERO");
+                currentRenderedFrame1 = readyIndex1;
+            }
         }
     }
 
+    // Journey Sequence
     const delta2 = targetFrame2 - airSequence2.frame;
     if (Math.abs(delta2) > 0.05) {
         airSequence2.frame += delta2 * 0.15;
         const rounded2 = Math.round(airSequence2.frame);
-        if (rounded2 !== currentRenderedFrame2 && images2[rounded2]) {
-            drawCoverImage(images2[rounded2], context2, canvas2, rounded2 + 1, "JOURNEY");
-            currentRenderedFrame2 = rounded2;
+        if (rounded2 !== currentRenderedFrame2) {
+            const readyIndex2 = findNearestLoadedFrame(images2, rounded2);
+            if (readyIndex2 !== -1 && readyIndex2 !== currentRenderedFrame2) {
+                drawCoverImage(images2[readyIndex2], context2, canvas2, readyIndex2 + 1, "JOURNEY");
+                currentRenderedFrame2 = readyIndex2;
+            }
         }
     }
 
