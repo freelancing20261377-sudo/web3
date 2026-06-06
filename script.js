@@ -1,7 +1,20 @@
 /**
- * AURA — Ultra-Premium Scroll Image Sequence Controller
- * Lenis + GSAP ScrollTrigger + Canvas Frame Sequences
+ * AURA — Production Scroll Image Sequence Controller
+ * Progressive loading | Lazy on-demand | Memory window | 60fps
  */
+
+// ==============================
+// CONFIG
+// ==============================
+const USE_WEBP = false;
+const FRAME_EXT = USE_WEBP ? 'webp' : 'jpg';
+const TOTAL_FRAMES = 121;
+const IS_SAFARI = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const BATCH_SIZE = IS_SAFARI ? 4 : 6;
+const BATCH_DELAY = IS_SAFARI ? 80 : 50;
+const INITIAL_BATCH = 15;
+const LAZY_WINDOW = 12;
+const MEMORY_WINDOW = 30;
 
 // ==============================
 // LENIS SMOOTH SCROLL
@@ -9,274 +22,251 @@
 let lenis;
 try {
     if (typeof Lenis !== 'undefined') {
-        lenis = new Lenis({
-            duration: 1.4,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothWheel: true,
-        });
-
-        if (typeof ScrollTrigger !== 'undefined') {
-            lenis.on('scroll', ScrollTrigger.update);
-        }
-
+        lenis = new Lenis({ duration: 1.4, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), smoothWheel: true });
+        if (typeof ScrollTrigger !== 'undefined') lenis.on('scroll', ScrollTrigger.update);
         if (typeof gsap !== 'undefined') {
-            gsap.ticker.add((time) => {
-                lenis.raf(time * 1000);
-            });
+            gsap.ticker.add((time) => lenis.raf(time * 1000));
             gsap.ticker.lagSmoothing(0);
         }
     }
-} catch (e) {
-    console.warn('Lenis initialization failed, falling back to native scroll');
+} catch (e) { console.warn('Lenis init failed'); }
+
+// ==============================
+// LOADING OVERLAY UI
+// ==============================
+const loadingOverlay = document.getElementById('loading-overlay');
+const progressBar = document.querySelector('.loading-progress-bar');
+const progressText = document.querySelector('.loading-percentage');
+const updateLoadingUI = (pct) => {
+    if (!progressBar || !progressText) return;
+    progressBar.style.width = `${pct}%`;
+    progressText.textContent = `${pct}%`;
+    if (pct >= 100 && loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+        setTimeout(() => { if(loadingOverlay) loadingOverlay.style.display = 'none'; }, 600);
+    }
+};
+
+// ==============================
+// FRAME SEQUENCE CLASS
+// ==============================
+class FrameSequence {
+    constructor(opts) {
+        this.id = opts.id;
+        this.canvas = opts.canvas;
+        this.ctx = opts.ctx;
+        this.totalFrames = opts.totalFrames;
+        this.getPath = opts.getPath;
+        this.label = opts.label;
+        this.images = [];
+        this.loadedSet = new Set();
+        this.evictedSet = new Set();
+        this.currentFrame = 0;
+        this.targetFrame = 0;
+        this.lastRendered = -1;
+        this.isVisible = opts.visible !== false;
+        this.hasStarted = false;
+        for (let i = 0; i < this.totalFrames; i++) this.images.push(new Image());
+    }
+
+    _framePath(i) {
+        return this.getPath(i + 1).replace(/\.jpg$/, `.${FRAME_EXT}`).replace(/\.jpeg$/, `.${FRAME_EXT}`);
+    }
+
+    loadRange(start, end, priority = false) {
+        for (let i = start; i < end && i < this.totalFrames; i++) {
+            if (this.loadedSet.has(i) || this.evictedSet.has(i)) continue;
+            const img = this.images[i];
+            img.src = this._framePath(i);
+            if (priority && img.decode) {
+                img.decode().then(() => this._onLoad(i)).catch(() => this._onLoad(i));
+            } else {
+                img.onload = () => this._onLoad(i);
+            }
+            img.onerror = () => { this.loadedSet.add(i); this._updateProgress(); };
+        }
+    }
+
+    _onLoad(index) {
+        this.loadedSet.add(index);
+        this._updateProgress();
+        if (index === 0) this.drawFrame(0);
+    }
+
+    _updateProgress() {
+        const pct = Math.min(100, Math.round((this.loadedSet.size / this.totalFrames) * 100));
+        if (this.id === 'hero') updateLoadingUI(pct);
+    }
+
+    loadInitial() {
+        if (!this.isVisible) return;
+        this.loadRange(0, INITIAL_BATCH, true);
+        let cursor = INITIAL_BATCH;
+        const step = () => {
+            if (cursor >= this.totalFrames) return;
+            const end = Math.min(cursor + BATCH_SIZE, this.totalFrames);
+            this.loadRange(cursor, end);
+            cursor = end;
+            if (cursor < this.totalFrames) setTimeout(step, BATCH_DELAY);
+        };
+        setTimeout(step, BATCH_DELAY);
+    }
+
+    ensureLoadedAround(targetFrame) {
+        if (!this.isVisible) return;
+        const start = Math.max(0, targetFrame - 5);
+        const end = Math.min(this.totalFrames, targetFrame + LAZY_WINDOW);
+        let needed = false;
+        for (let i = start; i < end; i++) {
+            if (!this.loadedSet.has(i) && !this.evictedSet.has(i)) { needed = true; break; }
+        }
+        if (needed) this.loadRange(start, end);
+        this._evictDistant(targetFrame);
+    }
+
+    _evictDistant(center) {
+        const minKeep = Math.max(0, center - MEMORY_WINDOW / 2);
+        const maxKeep = Math.min(this.totalFrames, center + MEMORY_WINDOW / 2);
+        for (let i = 0; i < this.totalFrames; i++) {
+            if (this.loadedSet.has(i) && (i < minKeep || i > maxKeep)) {
+                this.loadedSet.delete(i);
+                this.evictedSet.add(i);
+                this.images[i].src = '';
+            }
+        }
+    }
+
+    getNearestLoaded(target) {
+        if (this.loadedSet.has(target)) return target;
+        let d = 1;
+        while (d < this.totalFrames) {
+            const f = target + d, b = target - d;
+            if (f < this.totalFrames && this.loadedSet.has(f)) return f;
+            if (b >= 0 && this.loadedSet.has(b)) return b;
+            d++;
+        }
+        return -1;
+    }
+
+    drawFrame(index) {
+        const img = this.images[index];
+        if (!img || !img.complete || img.naturalWidth === 0) return;
+        const cw = window.innerWidth, ch = window.innerHeight;
+        const ratio = img.naturalWidth / img.naturalHeight;
+        const cr = cw / ch;
+        let rw, rh, xo, yo;
+        if (cr > ratio) { rw = cw; rh = cw / ratio; xo = 0; yo = (ch - rh) / 2; }
+        else { rw = ch * ratio; rh = ch; xo = (cw - rw) / 2; yo = 0; }
+        this.ctx.clearRect(0, 0, cw, ch);
+        this.ctx.drawImage(img, xo, yo, rw, rh);
+    }
+
+    tick() {
+        const delta = this.targetFrame - this.currentFrame;
+        if (Math.abs(delta) < 0.05) return;
+        this.currentFrame += delta * 0.12;
+        const rounded = Math.round(this.currentFrame);
+        if (rounded === this.lastRendered) return;
+        this.ensureLoadedAround(rounded);
+        const ready = this.getNearestLoaded(rounded);
+        if (ready !== -1 && ready !== this.lastRendered) {
+            this.drawFrame(ready);
+            this.lastRendered = ready;
+        }
+    }
+
+    setTargetFromScroll(scrollTop, containerTop, containerHeight) {
+        let fraction = (scrollTop - containerTop) / containerHeight;
+        fraction = Math.max(0, Math.min(1, fraction));
+        this.targetFrame = Math.min(this.totalFrames - 1, Math.floor(fraction * this.totalFrames));
+    }
 }
 
 // ==============================
-// GLOBAL CONFIG
+// INSTANCE SETUP
 // ==============================
-const totalFrames = 121;
+const c1 = document.getElementById('sequence-canvas');
+const ctx1 = c1 ? c1.getContext('2d', { alpha: false }) : null;
+const heroSeq = new FrameSequence({
+    id: 'hero', canvas: c1, ctx: ctx1, totalFrames: TOTAL_FRAMES,
+    getPath: i => `images/frame_${i.toString().padStart(4, '0')}.jpg`,
+    label: 'HERO', visible: true,
+});
 
-// ==============================
-// HERO CANVAS (images/)
-// ==============================
-const canvas1 = document.getElementById('sequence-canvas');
-const context1 = canvas1.getContext('2d');
-const currentFrame1 = index => `images/frame_${index.toString().padStart(4, '0')}.jpg`;
-
-const images1 = [];
-const airSequence1 = { frame: 0 };
-let targetFrame1 = 0;
-let currentRenderedFrame1 = -1;
-
-// ==============================
-// JOURNEY CANVAS (images1/)
-// ==============================
-const canvas2 = document.getElementById('sequence-canvas-2');
-const context2 = canvas2.getContext('2d');
-const currentFrame2 = index => `images1/frame_${index.toString().padStart(4, '0')}.jpg`;
-
-const images2 = [];
-const airSequence2 = { frame: 0 };
-let targetFrame2 = 0;
-let currentRenderedFrame2 = -1;
+const c2 = document.getElementById('sequence-canvas-2');
+const ctx2 = c2 ? c2.getContext('2d', { alpha: false }) : null;
+const journeySeq = new FrameSequence({
+    id: 'journey', canvas: c2, ctx: ctx2, totalFrames: TOTAL_FRAMES,
+    getPath: i => `images1/frame_${i.toString().padStart(4, '0')}.jpg`,
+    label: 'JOURNEY', visible: false,
+});
 
 // ==============================
-// CANVAS DPI & DRAWING
+// INTERSECTION OBSERVER (Lazy Journey)
 // ==============================
-const scaleCanvasDPI = (canvas, context) => {
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    context.scale(dpr, dpr);
-};
-
-const trackAllDevicePixelRatios = () => {
-    if(canvas1) scaleCanvasDPI(canvas1, context1);
-    if(canvas2) scaleCanvasDPI(canvas2, context2);
-};
-
-const drawCoverImage = (img, ctx, canvas, frameIndex, label) => {
-    const canvasWidth = window.innerWidth;
-    const canvasHeight = window.innerHeight;
-
-    if (!img || !img.complete || img.naturalWidth === 0) {
-        ctx.fillStyle = "#0A0A0A";
-        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-        ctx.fillStyle = "rgba(184, 155, 101, 0.4)";
-        ctx.font = "11px Inter";
-        ctx.textAlign = "center";
-        ctx.fillText(`AURA ENGINE // LOADING_${label}_${frameIndex.toString().padStart(4, '0')}.JPG`, canvasWidth / 2, canvasHeight / 2);
-        return;
-    }
-
-    const imgWidth = img.naturalWidth;
-    const imgHeight = img.naturalHeight;
-    const imgRatio = imgWidth / imgHeight;
-    const canvasRatio = canvasWidth / canvasHeight;
-
-    let renderWidth, renderHeight, xOffset, yOffset;
-
-    if (canvasRatio > imgRatio) {
-        renderWidth = canvasWidth;
-        renderHeight = canvasWidth / imgRatio;
-        xOffset = 0;
-        yOffset = (canvasHeight - renderHeight) / 2;
-    } else {
-        renderWidth = canvasHeight * imgRatio;
-        renderHeight = canvasHeight;
-        xOffset = (canvasWidth - renderWidth) / 2;
-        yOffset = 0;
-    }
-
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.drawImage(img, xOffset, yOffset, renderWidth, renderHeight);
-};
-
-// ==============================
-// SMART BATCHED FRAME LOADER
-// ==============================
-const BATCH_SIZE = 8;
-const BATCH_DELAY = 60;
-
-const isImageReady = (img) => img && img.complete && img.naturalWidth > 0;
-
-const findNearestLoadedFrame = (images, targetIndex) => {
-    if (isImageReady(images[targetIndex])) return targetIndex;
-    // Search outward from target
-    let distance = 1;
-    while (distance < totalFrames) {
-        const forward = targetIndex + distance;
-        const backward = targetIndex - distance;
-        if (forward < totalFrames && isImageReady(images[forward])) return forward;
-        if (backward >= 0 && isImageReady(images[backward])) return backward;
-        distance++;
-    }
-    return -1;
-};
-
-const loadBatch = (images, currentFrameFn, start, end) => {
-    for (let i = start; i < end && i <= totalFrames; i++) {
-        const img = images[i - 1];
-        if (!img.src) img.src = currentFrameFn(i);
-    }
-};
-
-const preloadSequenceBatched = (images, currentFrameFn, context, canvas, label, onFirstReady) => {
-    // Initialize empty image slots
-    for (let i = 1; i <= totalFrames; i++) {
-        images.push(new Image());
-    }
-
-    // Load frame 1 immediately for instant display
-    const firstImg = images[0];
-    firstImg.src = currentFrameFn(1);
-    firstImg.onload = () => {
-        requestAnimationFrame(() => drawCoverImage(firstImg, context, canvas, 1, label));
-        if (onFirstReady) onFirstReady();
-    };
-    firstImg.onerror = () => {};
-
-    // Load remaining frames in small batches with delay
-    let currentBatch = 2;
-    const loadNextBatch = () => {
-        if (currentBatch > totalFrames) return;
-        const end = Math.min(currentBatch + BATCH_SIZE - 1, totalFrames);
-        loadBatch(images, currentFrameFn, currentBatch, end);
-        currentBatch = end + 1;
-        if (currentBatch <= totalFrames) {
-            setTimeout(loadNextBatch, BATCH_DELAY);
-        }
-    };
-    setTimeout(loadNextBatch, BATCH_DELAY);
-};
-
-const preloadAllSequences = () => {
-    preloadSequenceBatched(images1, currentFrame1, context1, canvas1, "HERO");
-    preloadSequenceBatched(images2, currentFrame2, context2, canvas2, "JOURNEY");
-};
-
-// ==============================
-// SCROLL SEQUENCE CALCULATION
-// ==============================
-const calculateScrollSequences = () => {
-    const scrollTop = window.scrollY;
-    const viewportHeight = window.innerHeight;
-
-    // Hero Sequence
-    const container1 = document.querySelector('.scroll-sequence-container');
-    if (container1) {
-        const container1Top = container1.offsetTop;
-        const container1Height = container1.scrollHeight - viewportHeight;
-        let fraction1 = (scrollTop - container1Top) / container1Height;
-        fraction1 = Math.max(0, Math.min(1, fraction1));
-        targetFrame1 = Math.min(totalFrames - 1, Math.floor(fraction1 * totalFrames));
-
-        const heroOverlay = document.getElementById('hero-text-1');
-        if (heroOverlay) {
-            if (fraction1 > 0.22) {
-                heroOverlay.classList.remove('active');
-            } else {
-                heroOverlay.classList.add('active');
+const journeyContainer = document.querySelector('.scroll-sequence-container-2');
+if (journeyContainer && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting && !journeySeq.hasStarted) {
+                journeySeq.isVisible = true;
+                journeySeq.hasStarted = true;
+                journeySeq.loadInitial();
             }
+        });
+    }, { rootMargin: '200px 0px', threshold: 0.05 }).observe(journeyContainer);
+} else {
+    journeySeq.isVisible = true;
+    journeySeq.loadInitial();
+}
+
+// ==============================
+// SCROLL CALCULATION
+// ==============================
+const calculateScroll = () => {
+    const st = window.scrollY, vh = window.innerHeight;
+    const c1el = document.querySelector('.scroll-sequence-container');
+    if (c1el) {
+        heroSeq.setTargetFromScroll(st, c1el.offsetTop, c1el.scrollHeight - vh);
+        const overlay = document.getElementById('hero-text-1');
+        if (overlay) {
+            const f = (st - c1el.offsetTop) / (c1el.scrollHeight - vh);
+            overlay.classList.toggle('active', f <= 0.22);
         }
     }
-
-    // Journey Sequence
-    const container2 = document.querySelector('.scroll-sequence-container-2');
-    if (container2) {
-        const rect = container2.getBoundingClientRect();
-        const absoluteTop = rect.top + window.scrollY;
-        const container2Height = container2.scrollHeight - viewportHeight;
-        let fraction2 = (scrollTop - absoluteTop) / container2Height;
-        fraction2 = Math.max(0, Math.min(1, fraction2));
-        targetFrame2 = Math.min(totalFrames - 1, Math.floor(fraction2 * totalFrames));
-
-        // Journey text overlays
+    const c2el = document.querySelector('.scroll-sequence-container-2');
+    if (c2el) {
+        const top = c2el.getBoundingClientRect().top + st;
+        journeySeq.setTargetFromScroll(st, top, c2el.scrollHeight - vh);
+        const fraction = Math.max(0, Math.min(1, (st - top) / (c2el.scrollHeight - vh)));
         const overlays = [
-            document.getElementById('journey-overlay-1'),
-            document.getElementById('journey-overlay-2'),
-            document.getElementById('journey-overlay-3'),
-            document.getElementById('journey-overlay-4'),
+            document.getElementById('journey-overlay-1'), document.getElementById('journey-overlay-2'),
+            document.getElementById('journey-overlay-3'), document.getElementById('journey-overlay-4'),
             document.getElementById('journey-overlay-5'),
         ];
-
         overlays.forEach((el, idx) => {
             if (!el) return;
-            const start = idx * 0.18;
-            const end = start + 0.22;
-            if (fraction2 >= start && fraction2 <= end) {
-                el.classList.add('active');
-            } else {
-                el.classList.remove('active');
-            }
+            const s = idx * 0.18, e = s + 0.22;
+            el.classList.toggle('active', fraction >= s && fraction <= e);
         });
     }
 };
 
 // ==============================
-// RENDER LOOP
+// RENDER LOOP (60fps)
 // ==============================
-const globalRenderLoop = () => {
-    // Hero Sequence
-    const delta1 = targetFrame1 - airSequence1.frame;
-    if (Math.abs(delta1) > 0.05) {
-        airSequence1.frame += delta1 * 0.15;
-        const rounded1 = Math.round(airSequence1.frame);
-        if (rounded1 !== currentRenderedFrame1) {
-            const readyIndex1 = findNearestLoadedFrame(images1, rounded1);
-            if (readyIndex1 !== -1 && readyIndex1 !== currentRenderedFrame1) {
-                drawCoverImage(images1[readyIndex1], context1, canvas1, readyIndex1 + 1, "HERO");
-                currentRenderedFrame1 = readyIndex1;
-            }
-        }
-    }
-
-    // Journey Sequence
-    const delta2 = targetFrame2 - airSequence2.frame;
-    if (Math.abs(delta2) > 0.05) {
-        airSequence2.frame += delta2 * 0.15;
-        const rounded2 = Math.round(airSequence2.frame);
-        if (rounded2 !== currentRenderedFrame2) {
-            const readyIndex2 = findNearestLoadedFrame(images2, rounded2);
-            if (readyIndex2 !== -1 && readyIndex2 !== currentRenderedFrame2) {
-                drawCoverImage(images2[readyIndex2], context2, canvas2, readyIndex2 + 1, "JOURNEY");
-                currentRenderedFrame2 = readyIndex2;
-            }
-        }
-    }
-
-    requestAnimationFrame(globalRenderLoop);
+const renderLoop = () => {
+    heroSeq.tick();
+    journeySeq.tick();
+    requestAnimationFrame(renderLoop);
 };
 
 // ==============================
 // NAV SCROLL TRANSITION
 // ==============================
 const header = document.getElementById('site-header');
-const updateHeaderState = () => {
-    if (window.scrollY > 60) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
+const updateHeader = () => {
+    if (header) header.classList.toggle('scrolled', window.scrollY > 60);
 };
 
 // ==============================
@@ -285,26 +275,17 @@ const updateHeaderState = () => {
 const initScrollReveals = () => {
     if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
     gsap.registerPlugin(ScrollTrigger);
-
-    const revealSections = document.querySelectorAll('.section');
-    revealSections.forEach((section) => {
-        const elements = section.querySelectorAll('.section-title, .lead-text, .body-text, .timeline-step, .service-item, .project-card, .testimonial-quote, .form-wrapper, .pricing-card, .showcase-item, .insight-card, .booking-content, .booking-image-wrapper');
-        if (!elements.length) return;
-        gsap.fromTo(elements,
-            { y: 40, opacity: 0 },
-            {
-                y: 0,
-                opacity: 1,
-                duration: 1,
-                ease: 'power3.out',
-                stagger: 0.1,
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 85%',
-                    toggleActions: 'play none none none',
-                }
-            }
+    document.querySelectorAll('.section').forEach(section => {
+        const els = section.querySelectorAll(
+            '.section-title, .lead-text, .body-text, .timeline-step, .service-item, .project-card,' +
+            '.testimonial-quote, .form-wrapper, .pricing-card, .showcase-item, .insight-card,' +
+            '.booking-content, .booking-image-wrapper'
         );
+        if (!els.length) return;
+        gsap.fromTo(els, { y: 40, opacity: 0 }, {
+            y: 0, opacity: 1, duration: 1, ease: 'power3.out', stagger: 0.1,
+            scrollTrigger: { trigger: section, start: 'top 85%', toggleActions: 'play none none none' }
+        });
     });
 };
 
@@ -312,20 +293,21 @@ const initScrollReveals = () => {
 // EVENT LISTENERS
 // ==============================
 window.addEventListener('resize', () => {
-    trackAllDevicePixelRatios();
-    if(images1[Math.round(airSequence1.frame)]) drawCoverImage(images1[Math.round(airSequence1.frame)], context1, canvas1, Math.round(airSequence1.frame) + 1, "HERO");
-    if(images2[Math.round(airSequence2.frame)]) drawCoverImage(images2[Math.round(airSequence2.frame)], context2, canvas2, Math.round(airSequence2.frame) + 1, "JOURNEY");
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    [heroSeq, journeySeq].forEach(seq => {
+        if (!seq.canvas) return;
+        seq.canvas.width = window.innerWidth * dpr;
+        seq.canvas.height = window.innerHeight * dpr;
+        seq.ctx.scale(dpr, dpr);
+        if (seq.lastRendered !== -1) seq.drawFrame(seq.lastRendered);
+    });
 });
 
-window.addEventListener('scroll', () => {
-    calculateScrollSequences();
-    updateHeaderState();
-}, { passive: true });
+window.addEventListener('scroll', () => { calculateScroll(); updateHeader(); }, { passive: true });
 
 // ==============================
 // INITIALIZATION
 // ==============================
-trackAllDevicePixelRatios();
-preloadAllSequences();
-requestAnimationFrame(globalRenderLoop);
+heroSeq.loadInitial();
+requestAnimationFrame(renderLoop);
 initScrollReveals();
