@@ -114,8 +114,15 @@ const ctx1      = canvas1 ? canvas1.getContext('2d') : null;
 const canvas2   = document.getElementById('sequence-canvas-2');
 const ctx2      = canvas2 ? canvas2.getContext('2d') : null;
 
-const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.jpg`;
-const journeyFramePath = (i) => `images1/frame_${String(i).padStart(4, '0')}.jpg`;
+// Detect WebP support once, then use the best format
+const supportsWebP = (() => {
+    const c = document.createElement('canvas');
+    return c.toDataURL('image/webp').startsWith('data:image/webp');
+})();
+const EXT = supportsWebP ? 'webp' : 'jpg';
+
+const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.${EXT}`;
+const journeyFramePath = (i) => `images1/frame_${String(i).padStart(4, '0')}.${EXT}`;
 
 const imgs1 = [], imgs2 = [];
 const seq1  = { frame: 0 }, seq2 = { frame: 0 };
@@ -415,3 +422,34 @@ initReveal();
 initForm();
 updateHeader();
 computeSequences();
+
+// ============================================================
+// 14. LAZY IMAGE OBSERVER — fade-in + LQIP blur-up + skeleton
+// ============================================================
+(() => {
+    const onLoad = (img) => {
+        img.classList.add('loaded');
+        const wrapper = img.closest('.project-image-wrapper');
+        if (wrapper) wrapper.classList.add('img-loaded');
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(({ isIntersecting, target }) => {
+            if (!isIntersecting) return;
+            observer.unobserve(target);
+            if (target.complete && target.naturalWidth > 0) {
+                onLoad(target);
+            } else {
+                target.addEventListener('load', () => onLoad(target), { once: true });
+            }
+        });
+    }, { rootMargin: '200px' });
+
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        if (img.complete && img.naturalWidth > 0) {
+            onLoad(img);
+        } else {
+            observer.observe(img);
+        }
+    });
+})();

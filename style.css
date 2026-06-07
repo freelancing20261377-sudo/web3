@@ -2016,6 +2016,63 @@ a.contact-detail-value:hover { color: var(--champagne); }
 }
 
 /* ==========================================================================
+   PERFORMANCE — LQIP / Skeleton / CLS prevention
+   ========================================================================== */
+
+/* Prevent layout shift — all image containers have explicit aspect ratio */
+.project-image-wrapper {
+    contain: layout style;
+}
+
+/* LQIP blur-up: image starts blurred (from the tiny placeholder bg),
+   clears once the real image loads */
+img.lqip {
+    filter: blur(8px);
+    transition: filter 0.6s ease;
+}
+img.lqip.loaded {
+    filter: blur(0);
+}
+
+/* Skeleton pulse for project cards before image loads */
+.project-image-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #e8e4de 25%, #f0ece6 50%, #e8e4de 75%);
+    background-size: 200% 100%;
+    animation: skeleton-pulse 1.4s ease infinite;
+    z-index: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.4s;
+}
+.project-image-wrapper.img-loaded::before {
+    opacity: 0;
+}
+
+@keyframes skeleton-pulse {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Ensure project-img sits above skeleton */
+.project-img {
+    position: relative;
+    z-index: 1;
+}
+
+/* All lazy images fade in on load */
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* ==========================================================================
    UTILITY
    ========================================================================== */
 ::selection {
