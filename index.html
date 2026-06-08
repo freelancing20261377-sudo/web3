@@ -21,6 +21,7 @@
     <!-- Custom Cursor -->
     <div class="cursor-dot" id="cursor-dot"></div>
     <div class="cursor-ring" id="cursor-ring"></div>
+    <div class="cursor-glow" id="cursor-glow"></div>
 
     <!-- Page Loader -->
     <div class="page-loader" id="page-loader">
@@ -40,7 +41,10 @@
             <a href="#process" class="nav-link">Process</a>
             <a href="#contact" class="nav-link">Contact</a>
         </nav>
-        <a href="#contact" class="nav-cta-box">Begin a Project</a>
+        <div class="nav-actions">
+            <a href="tel:1234567890" class="nav-call">CALL</a>
+            <a href="#contact" class="nav-cta-box">BOOK</a>
+        </div>
         <button class="nav-menu-btn" id="nav-menu-btn" aria-label="Menu">
             <span></span><span></span>
         </button>
@@ -71,13 +75,13 @@
             <div class="hero-overlay active" id="hero-text-1">
                 <p class="hero-eyebrow">Luxury Interior Design Studio</p>
                 <h1 class="hero-title">
-                    <span class="hero-line"><span>Designing Spaces</span></span>
-                    <span class="hero-line"><span>That Reflect <em class="gold-italic">Success</em></span></span>
+                    <span class="hero-line"><span>Designing Timeless</span></span>
+                    <span class="hero-line"><span>Spaces for <em class="gold-italic">Modern Living</em></span></span>
                 </h1>
-                <p class="hero-subtitle">Luxury interiors crafted for modern living.</p>
+                <p class="hero-subtitle">Future Space crafts luxury residential and commercial environments through architecture, interiors, visualization, and BIM-led design solutions.</p>
                 <div class="hero-actions">
-                    <a href="#contact" class="btn btn-hero-primary"><span>Schedule Consultation</span></a>
-                    <a href="#projects" class="btn btn-hero-ghost"><span>View Our Work</span></a>
+                    <a href="#projects" class="btn btn-hero-primary"><span>View Projects</span></a>
+                    <a href="#contact" class="btn btn-hero-ghost"><span>Book Consultation</span></a>
                 </div>
             </div>
 
@@ -162,21 +166,25 @@
                         </div>
                     </div>
                     <div class="about-content-col">
-                        <h2 class="section-title about-title reveal-title">Vision &amp;<br><em>Mission</em></h2>
-                        <p class="lead-text reveal-item">Future Space is a pioneering architecture and interior design studio in India, dedicated to residential and commercial projects of rare quality.</p>
-                        <p class="body-text text-muted reveal-item">We provide comprehensive design solutions — architecture planning, interior design, 3D visualization, and BIM coordination. Our commitment is to create smart, future-ready spaces that embody innovation and enduring style.</p>
+                        <h2 class="section-title about-title reveal-title">About<br><em>Future Space</em></h2>
+                        <p class="lead-text reveal-item">Future Space is an architecture and interior design studio dedicated to creating refined residential and commercial environments.</p>
+                        <p class="body-text text-muted reveal-item">Through a combination of innovative design thinking, advanced visualization, and BIM-driven coordination, we deliver spaces that are functional, timeless, and future-ready.</p>
                         <div class="about-stats reveal-item">
                             <div class="about-stat">
-                                <span class="about-stat-num">120<sup>+</sup></span>
-                                <span class="about-stat-label">Projects Delivered</span>
+                                <span class="about-stat-num">50<sup>+</sup></span>
+                                <span class="about-stat-label">Design Concepts Developed</span>
                             </div>
                             <div class="about-stat">
-                                <span class="about-stat-num">8</span>
-                                <span class="about-stat-label">Years of Practice</span>
+                                <span class="about-stat-num">20<sup>+</sup></span>
+                                <span class="about-stat-label">Residential & Commercial Spaces</span>
                             </div>
                             <div class="about-stat">
-                                <span class="about-stat-num">6</span>
-                                <span class="about-stat-label">Design Awards</span>
+                                <span class="about-stat-num">100<sup>%</sup></span>
+                                <span class="about-stat-label">Client-Centric Approach</span>
+                            </div>
+                            <div class="about-stat">
+                                <span class="about-stat-num">End-to-End</span>
+                                <span class="about-stat-label">Design Solutions</span>
                             </div>
                         </div>
                         <a href="#contact" class="btn-text-link reveal-item">
@@ -200,6 +208,7 @@
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
                     </div>
+                    <p class="section-subtitle reveal-item">Explore a curated selection of projects showcasing our approach to architecture, interior design, and spatial innovation.</p>
                 </div>
 
                 <div class="projects-grid">
@@ -379,39 +388,6 @@
 
     </main>
 
-    <!-- Journey Scroll Sequence — outside main so ivory background doesn't cover canvas -->
-    <div class="scroll-sequence-container-2" id="journey-sequence">
-        <div class="sticky-wrapper-2">
-            <canvas id="sequence-canvas-2"></canvas>
-            <div class="canvas-vignette"></div>
-            <div class="journey-overlay" id="journey-overlay-1">
-                <span class="journey-tag">Architectural Journey</span>
-                <h2 class="journey-title">Evolving<br><em>Perspectives</em></h2>
-            </div>
-            <div class="journey-overlay" id="journey-overlay-2">
-                <span class="journey-tag">Material Language</span>
-                <h2 class="journey-title">Material<br><em>Harmony</em></h2>
-            </div>
-            <div class="journey-overlay" id="journey-overlay-3">
-                <span class="journey-tag">Spatial Intelligence</span>
-                <h2 class="journey-title">Architectural<br><em>Precision</em></h2>
-            </div>
-            <div class="journey-overlay" id="journey-overlay-4">
-                <span class="journey-tag">Artisan Detail</span>
-                <h2 class="journey-title">Crafted<br><em>Details</em></h2>
-            </div>
-            <div class="journey-overlay" id="journey-overlay-5">
-                <span class="journey-tag">Luminous Design</span>
-                <h2 class="journey-title">Designed Around<br><em>Light</em></h2>
-            </div>
-            <!-- Permanent watermark cover for journey canvas -->
-            <div class="hero-brand-badge">
-                <span class="badge-brand">Future<em>Space</em></span>
-                <span class="badge-subtitle">Luxury Interior Studio</span>
-            </div>
-        </div>
-    </div>
-
     <main class="main-content">
 
         <!-- Process Section -->
@@ -430,18 +406,12 @@
                                 <h3>Discovery</h3>
                                 <p>An exhaustive exploration of your lifestyle, aesthetic aspirations, and spatial requirements.</p>
                             </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </div>
                         </div>
                         <div class="timeline-step reveal-item" style="--delay: 0.08s">
                             <div class="step-number">02</div>
                             <div class="step-content">
                                 <h3>Concept Development</h3>
                                 <p>Formulating spatial narratives through mood boards, material palettes, and initial space planning configurations.</p>
-                            </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </div>
                         </div>
                         <div class="timeline-step reveal-item" style="--delay: 0.16s">
@@ -450,18 +420,12 @@
                                 <h3>Design Direction</h3>
                                 <p>Refining concepts into definitive directions with detailed spatial plans, elevations, and 3D visualizations.</p>
                             </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </div>
                         </div>
                         <div class="timeline-step reveal-item" style="--delay: 0.24s">
                             <div class="step-number">04</div>
                             <div class="step-content">
                                 <h3>Documentation</h3>
                                 <p>Comprehensive technical drawings, specifications, and procurement schedules for flawless execution.</p>
-                            </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </div>
                         </div>
                         <div class="timeline-step reveal-item" style="--delay: 0.32s">
@@ -470,18 +434,12 @@
                                 <h3>Execution</h3>
                                 <p>Rigorous project management, artisan coordination, and turn-key construction supervision to bring visions to life.</p>
                             </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </div>
                         </div>
                         <div class="timeline-step reveal-item" style="--delay: 0.40s">
                             <div class="step-number">06</div>
                             <div class="step-content">
                                 <h3>Styling</h3>
                                 <p>Final curation of furnishings, art, and accessories to complete the narrative and elevate every detail.</p>
-                            </div>
-                            <div class="step-arrow">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                             </div>
                         </div>
                     </div>
@@ -503,8 +461,8 @@
                         </div>
                         <div class="service-content">
                             <span class="service-num">01</span>
-                            <h3 class="service-title">Interior Architecture</h3>
-                            <p>Spatial planning and structural aesthetics that transform raw volumes into purposeful, breathtaking environments of lasting distinction.</p>
+                            <h3 class="service-title">Architecture Design</h3>
+                            <p>Thoughtfully planned residential and commercial architecture tailored to functionality, aesthetics, and long-term value.</p>
                             <a href="#contact" class="service-link">
                                 <span>Enquire</span>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -517,8 +475,8 @@
                         </div>
                         <div class="service-content">
                             <span class="service-num">02</span>
-                            <h3 class="service-title">Luxury Residential Design</h3>
-                            <p>Bespoke residences and villas designed around how you live — intimate, refined, and deeply personal in every material and proportion.</p>
+                            <h3 class="service-title">Interior Design</h3>
+                            <p>Bespoke interior environments that balance elegance, comfort, and modern living.</p>
                             <a href="#contact" class="service-link">
                                 <span>Enquire</span>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -531,8 +489,8 @@
                         </div>
                         <div class="service-content">
                             <span class="service-num">03</span>
-                            <h3 class="service-title">Commercial Design</h3>
-                            <p>Sophisticated commercial environments that fuse brand identity with spatial intelligence — offices, showrooms, and hospitality spaces.</p>
+                            <h3 class="service-title">3D Visualization</h3>
+                            <p>Photorealistic renders and immersive walkthroughs that bring concepts to life before execution.</p>
                             <a href="#contact" class="service-link">
                                 <span>Enquire</span>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -545,36 +503,8 @@
                         </div>
                         <div class="service-content">
                             <span class="service-num">04</span>
-                            <h3 class="service-title">Furniture Curation</h3>
-                            <p>Careful selection and commissioning of furniture pieces — from global ateliers and artisan workshops — that complete each spatial narrative.</p>
-                            <a href="#contact" class="service-link">
-                                <span>Enquire</span>
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="service-item reveal-item" style="--delay: 0.32s">
-                        <div class="service-image">
-                            <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?auto=format&fit=crop&w=700&q=80" alt="Material Selection" loading="lazy">
-                        </div>
-                        <div class="service-content">
-                            <span class="service-num">05</span>
-                            <h3 class="service-title">Material Selection</h3>
-                            <p>A discerning eye for stone, timber, metal, and textile — curating material palettes that age beautifully and feel unmistakably premium.</p>
-                            <a href="#contact" class="service-link">
-                                <span>Enquire</span>
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="service-item reveal-item" style="--delay: 0.40s">
-                        <div class="service-image">
-                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=700&q=80" alt="Turnkey Execution" loading="lazy">
-                        </div>
-                        <div class="service-content">
-                            <span class="service-num">06</span>
-                            <h3 class="service-title">Turnkey Execution</h3>
-                            <p>End-to-end project delivery — from concept approvals through construction supervision, procurement, and final styling — handled entirely by our studio.</p>
+                            <h3 class="service-title">BIM Coordination</h3>
+                            <p>Advanced BIM-based collaboration ensuring accuracy, efficiency, and seamless project delivery.</p>
                             <a href="#contact" class="service-link">
                                 <span>Enquire</span>
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -654,6 +584,7 @@
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </a>
                     </div>
+                    <p class="section-subtitle reveal-item">Insights, trends, and perspectives from the world of architecture, interiors, and design innovation.</p>
                 </div>
                 <div class="insights-grid">
                     <article class="insight-card insight-card--featured reveal-item">
@@ -708,20 +639,40 @@
                 <div class="contact-layout">
                     <div class="contact-info">
                         <span class="section-label reveal-item">07 — Begin</span>
-                        <h2 class="contact-title reveal-title">Let's design your<br><em>future space</em><br>together.</h2>
-                        <p class="body-text text-muted reveal-item">We take on a limited number of projects each year to ensure every client receives our full attention and dedication.</p>
+                        <h2 class="contact-title reveal-title">Let's Create Something<br><em>Exceptional</em></h2>
+                        <p class="body-text text-muted reveal-item">Whether you're planning a residence, commercial space, renovation, or visualization project, we'd love to hear about your vision.</p>
+                        <div class="contact-trust reveal-item">
+                            <span>Residential Design</span> <span class="trust-divider">•</span>
+                            <span>Commercial Design</span> <span class="trust-divider">•</span>
+                            <span>Interior Design</span> <span class="trust-divider">•</span>
+                            <span>Visualization</span>
+                        </div>
+                        <div class="contact-luxury-info reveal-item">
+                            <div class="luxury-info-item">
+                                <span class="luxury-info-label">Response Time</span>
+                                <span class="luxury-info-value">Within 24 Hours</span>
+                            </div>
+                            <div class="luxury-info-item">
+                                <span class="luxury-info-label">Consultation</span>
+                                <span class="luxury-info-value">Online & On-Site</span>
+                            </div>
+                            <div class="luxury-info-item">
+                                <span class="luxury-info-label">Project Locations</span>
+                                <span class="luxury-info-value">Across India</span>
+                            </div>
+                        </div>
                         <div class="contact-details reveal-item">
                             <div class="contact-detail-item">
                                 <span class="contact-detail-label">Phone</span>
-                                <a href="tel:1234567890" class="contact-detail-value">123-456-7890</a>
+                                <a href="tel:+91XXXXXXXXXX" class="contact-detail-value">+91 XXXXX XXXXX</a>
                             </div>
                             <div class="contact-detail-item">
                                 <span class="contact-detail-label">Email</span>
-                                <a href="mailto:info@mysite.com" class="contact-detail-value">info@mysite.com</a>
+                                <a href="mailto:hello@futurespace.in" class="contact-detail-value">hello@futurespace.in</a>
                             </div>
                             <div class="contact-detail-item">
                                 <span class="contact-detail-label">Location</span>
-                                <span class="contact-detail-value">India</span>
+                                <span class="contact-detail-value">Chennai, India</span>
                             </div>
                         </div>
                     </div>
@@ -752,8 +703,14 @@
                                 <input type="text" id="cf-project" name="project" placeholder="Residential / Commercial / Visualization">
                             </div>
                             <div class="form-group">
-                                <label for="cf-budget">Budget Range</label>
-                                <input type="text" id="cf-budget" name="budget" placeholder="e.g. ₹25L – ₹50L">
+                                <label for="cf-budget">Project Investment</label>
+                                <select id="cf-budget" name="budget" required>
+                                    <option value="">Select investment range</option>
+                                    <option value="10L-25L">₹10L – ₹25L</option>
+                                    <option value="25L-50L">₹25L – ₹50L</option>
+                                    <option value="50L-1Cr">₹50L – ₹1Cr</option>
+                                    <option value="1Cr+">₹1Cr+</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="cf-message">Project Description</label>
@@ -779,7 +736,7 @@
     <footer class="site-footer">
         <div class="footer-top-bar">
             <div class="container footer-top-inner">
-                <span class="footer-logo">Future Space</span>
+                <span class="footer-logo">Future Space — Architecture &amp; Interior Design Studio</span>
                 <p class="footer-tagline">Architecture &amp; Interior Design Studio — India</p>
                 <div class="footer-social">
                     <a href="#" aria-label="Instagram" class="social-link">Instagram</a>

@@ -11,9 +11,11 @@
 // ============================================================
 const cursorDot  = document.getElementById('cursor-dot');
 const cursorRing = document.getElementById('cursor-ring');
+const cursorGlow = document.getElementById('cursor-glow');
 
 let mouseX = -100, mouseY = -100;
 let ringX  = -100, ringY  = -100;
+let glowX  = -100, glowY  = -100;
 let rafCursor;
 
 const isTouch = window.matchMedia('(pointer: coarse)').matches;
@@ -29,6 +31,13 @@ if (!isTouch && cursorDot && cursorRing) {
         ringX += (mouseX - ringX) * 0.12;
         ringY += (mouseY - ringY) * 0.12;
         cursorRing.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%,-50%)`;
+        
+        glowX += (mouseX - glowX) * 0.08;
+        glowY += (mouseY - glowY) * 0.08;
+        if (cursorGlow) {
+            cursorGlow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%,-50%)`;
+        }
+        
         rafCursor = requestAnimationFrame(animateCursorRing);
     };
     animateCursorRing();
@@ -105,22 +114,18 @@ if (document.readyState === 'complete') {
 // 4. CANVAS FRAME SEQUENCES
 // ============================================================
 const TOTAL_FRAMES_HERO    = 99;
-const TOTAL_FRAMES_JOURNEY = 121;
 const BATCH_SIZE  = 30;   // load 30 frames per tick
 const BATCH_DELAY = 0;    // no gap between batches
 
 const canvas1   = document.getElementById('sequence-canvas');
 const ctx1      = canvas1 ? canvas1.getContext('2d') : null;
-const canvas2   = document.getElementById('sequence-canvas-2');
-const ctx2      = canvas2 ? canvas2.getContext('2d') : null;
 
 const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.jpg`;
-const journeyFramePath = (i) => `images1/frame_${String(i).padStart(4, '0')}.jpg`;
 
-const imgs1 = [], imgs2 = [];
-const seq1  = { frame: 0 }, seq2 = { frame: 0 };
-let tgt1 = 0, tgt2 = 0;
-let drawn1 = -1, drawn2 = -1;
+const imgs1 = [];
+const seq1  = { frame: 0 };
+let tgt1 = 0;
+let drawn1 = -1;
 
 const scaleDPI = (canvas, ctx) => {
     const dpr = window.devicePixelRatio || 1;
@@ -131,7 +136,6 @@ const scaleDPI = (canvas, ctx) => {
 
 const scaleAllCanvases = () => {
     if (canvas1 && ctx1) scaleDPI(canvas1, ctx1);
-    if (canvas2 && ctx2) scaleDPI(canvas2, ctx2);
 };
 
 const drawCover = (img, ctx, label = '') => {
@@ -213,10 +217,8 @@ const preloadSeq = (arr, pathFn, ctx, canvas, total, onReady) => {
 
 // Cached offsets — measured once, never on scroll
 let c1Top = 0, c1Height = 1;
-let c2Top = 0, c2Height = 1;
 const heroEl    = document.getElementById('hero-text-1');
 const heroEls   = [1,2,3,4].map(i => document.getElementById(`hero-text-${i}`));
-const OVERLAYS  = [1,2,3,4,5].map(i => document.getElementById(`journey-overlay-${i}`));
 
 // Hero phase windows [start, end] as fraction of scroll progress
 const HERO_PHASES = [
@@ -233,11 +235,6 @@ const cacheOffsets = () => {
         c1Top    = c1.offsetTop;
         c1Height = c1.scrollHeight - vh;
     }
-    const c2 = document.querySelector('.scroll-sequence-container-2');
-    if (c2) {
-        c2Top    = c2.offsetTop;
-        c2Height = c2.scrollHeight - vh;
-    }
 };
 
 const computeSequences = () => {
@@ -253,15 +250,6 @@ const computeSequences = () => {
         const [s, e] = HERO_PHASES[i];
         el.classList.toggle('active', f1 >= s && f1 <= e);
     });
-
-    // Journey sequence
-    const f2 = Math.max(0, Math.min(1, (sy - c2Top) / c2Height));
-    tgt2 = Math.min(TOTAL_FRAMES_JOURNEY - 1, Math.floor(f2 * TOTAL_FRAMES_JOURNEY));
-    OVERLAYS.forEach((el, i) => {
-        if (!el) return;
-        const s = i * 0.18;
-        el.classList.toggle('active', f2 >= s && f2 <= s + 0.22);
-    });
 };
 
 // ============================================================
@@ -276,18 +264,6 @@ const renderLoop = () => {
             if (r1 !== drawn1) {
                 const ni = nearestLoaded(imgs1, r1, TOTAL_FRAMES_HERO);
                 if (ni !== -1 && ni !== drawn1) { drawCover(imgs1[ni], ctx1); drawn1 = ni; }
-            }
-        }
-    }
-
-    if (ctx2) {
-        const d2 = tgt2 - seq2.frame;
-        if (Math.abs(d2) > 0.05) {
-            seq2.frame += d2 * 0.22;
-            const r2 = Math.round(seq2.frame);
-            if (r2 !== drawn2) {
-                const ni = nearestLoaded(imgs2, r2, TOTAL_FRAMES_JOURNEY);
-                if (ni !== -1 && ni !== drawn2) { drawCover(imgs2[ni], ctx2); drawn2 = ni; }
             }
         }
     }
@@ -388,9 +364,7 @@ window.addEventListener('resize', () => {
         scaleAllCanvases();
         cacheOffsets();
         const f1 = Math.round(seq1.frame);
-        const f2 = Math.round(seq2.frame);
         if (ctx1 && imgs1[f1]) drawCover(imgs1[f1], ctx1);
-        if (ctx2 && imgs2[f2]) drawCover(imgs2[f2], ctx2);
     }, 100);
 });
 
@@ -409,7 +383,6 @@ scaleAllCanvases();
 cacheOffsets();
 
 preloadSeq(imgs1, heroFramePath,    ctx1, canvas1, TOTAL_FRAMES_HERO);
-preloadSeq(imgs2, journeyFramePath, ctx2, canvas2, TOTAL_FRAMES_JOURNEY);
 requestAnimationFrame(renderLoop);
 initReveal();
 initForm();
