@@ -284,18 +284,26 @@ const updateHeader = () => {
 };
 
 if (menuBtn && mobileMenu) {
+    const closeMenu = () => {
+        mobileMenu.classList.remove('open');
+        menuBtn.classList.remove('open');
+        document.body.style.overflow = '';
+    };
+
     menuBtn.addEventListener('click', () => {
         const open = mobileMenu.classList.toggle('open');
         menuBtn.classList.toggle('open', open);
         document.body.style.overflow = open ? 'hidden' : '';
     });
 
-    mobileMenu.querySelectorAll('.mobile-nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.remove('open');
-            menuBtn.classList.remove('open');
-            document.body.style.overflow = '';
-        });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && mobileMenu.classList.contains('open')) {
+            closeMenu();
+        }
     });
 }
 
