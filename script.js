@@ -186,11 +186,6 @@ const preloadSeq = (arr, pathFn, ctx, canvas, total, onReady) => {
     arr[0].onload = () => {
         if (ctx && canvas) requestAnimationFrame(() => drawCover(arr[0], ctx));
         if (onReady) onReady();
-        // Fade out loading badge after first frame loads
-        const badge = document.getElementById('hero-loading-badge');
-        if (badge) {
-            setTimeout(() => badge.classList.add('fade-out'), 1200);
-        }
     };
     arr[0].onerror = () => {};
     arr[0].src = pathFn(1);

@@ -796,53 +796,44 @@ a { text-decoration: none; }
     to   { transform: translateX(-50%); }
 }
 
-/* Loading badge — glassmorphism, hides watermark during load */
-.hero-loading-badge {
+/* Permanent brand badge — covers watermark area at all times */
+.hero-brand-badge {
     position: absolute;
-    bottom: 32px;
-    right: 32px;
+    bottom: 0;
+    right: 0;
     z-index: 10;
-    padding: 1rem 1.4rem;
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 12px;
-    box-shadow:
-        0 8px 32px rgba(0,0,0,0.25),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-    opacity: 1;
-    transition: opacity 0.8s var(--ease-luxury), transform 0.8s var(--ease-luxury);
-    pointer-events: none;
-}
-
-.hero-loading-badge.fade-out {
-    opacity: 0;
-    transform: translateY(8px);
-}
-
-.badge-content {
+    width: 220px;
+    padding: 18px 20px 20px;
+    background: linear-gradient(135deg, rgba(14,11,8,0.82) 0%, rgba(14,11,8,0.92) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top-left-radius: 12px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
+    pointer-events: none;
 }
 
 .badge-brand {
     font-family: var(--font-serif);
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 400;
     color: #ffffff;
     letter-spacing: 0.02em;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    line-height: 1;
+}
+
+.badge-brand em {
+    font-style: italic;
+    color: #D4AF37;
 }
 
 .badge-subtitle {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.25em;
-    color: rgba(255,255,255,0.85);
-    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    letter-spacing: 0.22em;
+    color: rgba(255,255,255,0.65);
 }
 
 /* ==========================================================================
@@ -1968,7 +1959,7 @@ a.contact-detail-value:hover { color: var(--champagne); }
     .hero-actions .btn { width: 100%; max-width: 320px; padding: 1rem 1.8rem; }
     .hero-scroll-cue { display: none; }
     .hero-marquee { display: none; }
-    .hero-loading-badge { display: none; }
+    .hero-brand-badge { display: none; }
 
     /* Journey canvas — hide on mobile */
     .scroll-sequence-container-2 { display: none; }
