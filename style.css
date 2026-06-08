@@ -1888,19 +1888,34 @@ a.contact-detail-value:hover { color: var(--champagne); }
     .site-header { padding: 1.1rem 20px; }
     .brand-logo { font-size: 1.25rem; }
 
-    /* Hero */
-    .sticky-wrapper { padding: 0 20px; }
+    /* Hero — replace canvas with static image on mobile */
+    #sequence-canvas { display: none; }
+    .scroll-sequence-container { height: 100svh; min-height: 100vh; }
+    .sticky-wrapper {
+        position: relative;
+        height: 100svh;
+        min-height: 100vh;
+        padding: 0 20px;
+        background-image:
+            linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.55) 100%),
+            url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80&fm=webp');
+        background-size: cover;
+        background-position: center;
+    }
+    /* Force first overlay always visible on mobile — no scroll needed */
     .hero-overlay { left: 20px; max-width: calc(100vw - 40px); }
+    #hero-text-1 { opacity: 1 !important; transform: translateY(-50%) !important; pointer-events: auto !important; }
+    #hero-text-2, #hero-text-3, #hero-text-4 { display: none; }
     .hero-title { font-size: clamp(2rem, 9.5vw, 3.2rem); line-height: 1.08; }
     .hero-eyebrow { font-size: 0.65rem; letter-spacing: 0.3em; margin-bottom: 1.2rem; }
     .hero-subtitle { font-size: 0.95rem; margin: 1.2rem 0 2rem; }
     .hero-actions { flex-direction: column; gap: 10px; }
     .hero-actions .btn { width: 100%; max-width: 320px; padding: 1rem 1.8rem; }
     .hero-scroll-cue { display: none; }
-    .hero-marquee-track span { font-size: 0.85rem; }
-    .hero-marquee-track { gap: 1.6rem; }
+    .hero-marquee { display: none; }
 
-    /* Journey canvas */
+    /* Journey canvas — hide on mobile */
+    .scroll-sequence-container-2 { display: none; }
     .journey-overlay { padding: 0 20px; }
     .journey-title { font-size: clamp(1.8rem, 8vw, 2.8rem); }
     .journey-tag { font-size: 9px; }

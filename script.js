@@ -114,15 +114,8 @@ const ctx1      = canvas1 ? canvas1.getContext('2d') : null;
 const canvas2   = document.getElementById('sequence-canvas-2');
 const ctx2      = canvas2 ? canvas2.getContext('2d') : null;
 
-// Detect WebP support once, then use the best format
-const supportsWebP = (() => {
-    const c = document.createElement('canvas');
-    return c.toDataURL('image/webp').startsWith('data:image/webp');
-})();
-const EXT = supportsWebP ? 'webp' : 'jpg';
-
-const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.${EXT}`;
-const journeyFramePath = (i) => `images1/frame_${String(i).padStart(4, '0')}.${EXT}`;
+const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.jpg`;
+const journeyFramePath = (i) => `images1/frame_${String(i).padStart(4, '0')}.jpg`;
 
 const imgs1 = [], imgs2 = [];
 const seq1  = { frame: 0 }, seq2 = { frame: 0 };
