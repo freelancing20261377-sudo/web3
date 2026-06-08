@@ -619,6 +619,9 @@ a { text-decoration: none; }
     height: 100% !important;
     object-fit: cover;
     z-index: 1;
+    /* Zoom in 3% and offset up/left to hide bottom-right watermark */
+    transform: scale(1.03) translate(-1.5%, -1.5%);
+    transform-origin: center center;
 }
 
 .hero-vignette {
@@ -821,6 +824,9 @@ a { text-decoration: none; }
     height: 100% !important;
     object-fit: cover;
     z-index: 1;
+    /* Zoom in 3% and offset up/left to hide bottom-right watermark */
+    transform: scale(1.03) translate(-1.5%, -1.5%);
+    transform-origin: center center;
 }
 
 .canvas-vignette {
