@@ -2125,11 +2125,11 @@ a { text-decoration: none; }
         left: 24px;
         right: 24px;
         max-width: calc(100vw - 48px);
-        top: 50%;
+        top: 30%;
         bottom: auto;
-        transform: translateY(-50%);
+        transform: translateY(-30%);
     }
-    #hero-text-1 { opacity: 1 !important; transform: translateY(-50%) !important; pointer-events: auto !important; }
+    #hero-text-1 { opacity: 1 !important; transform: translateY(-30%) !important; pointer-events: auto !important; }
     #hero-text-2, #hero-text-3, #hero-text-4 { display: none; }
     .hero-title { font-size: clamp(2.1rem, 11vw, 3.4rem); line-height: 1.08; }
     .hero-eyebrow { font-size: 0.62rem; letter-spacing: 0.3em; margin-bottom: 1rem; }
