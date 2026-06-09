@@ -704,13 +704,47 @@ a { text-decoration: none; }
     right: 32px;
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.3);
+    align-items: flex-end;
     opacity: 0;
     transition: opacity 0.5s var(--ease-luxury) 0.55s;
 }
+
+.mobile-menu-footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.mobile-menu-footer-contacts a,
+.mobile-menu-footer-contacts span {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.mobile-menu-footer-contacts a:hover { color: var(--accent-gold); }
+
+.mobile-menu-footer-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: right;
+}
+
+.mobile-menu-footer-socials a {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.mobile-menu-footer-socials a:hover { color: var(--accent-gold); }
 
 .mobile-menu.open .mobile-menu-footer { opacity: 1; }
 
@@ -1745,6 +1779,23 @@ a { text-decoration: none; }
     color: rgba(200, 169, 126, 0.4);
 }
 
+/* Contact Checklist (replaces info cards on mobile) */
+.contact-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(200, 169, 126, 0.15);
+}
+
+.contact-check-item {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.02em;
+}
+
 .contact-luxury-info {
     display: flex;
     flex-direction: column;
@@ -2117,31 +2168,29 @@ a { text-decoration: none; }
 @media (max-width: 768px) {
     /* ── Base ── */
     html, body { overflow-x: hidden; }
-    .container { padding: 0 28px; }
-    .section { padding: 64px 0; border-bottom-color: rgba(200, 169, 126, 0.18); }
+    .container { padding: 0 24px; }
+    .section { padding: 80px 0; border-bottom-color: rgba(200, 169, 126, 0.18); }
     .section-label {
         font-size: 9px;
-        letter-spacing: 0.3em;
+        letter-spacing: 0.12em;
         margin-bottom: 20px;
         opacity: 0.85;
     }
     .section-title {
         font-size: clamp(2rem, 8.5vw, 2.8rem);
-        line-height: 1.08;
+        line-height: 1.1;
         letter-spacing: -0.5px;
+        font-weight: 300;
     }
     .section-subtitle {
         font-size: 0.92rem;
-        line-height: 1.65;
+        line-height: 1.8;
         color: var(--color-text-muted);
         margin-top: 12px;
+        max-width: 32ch;
     }
-    .section-header { margin-bottom: 40px; }
-
-    /* Prevent iOS zoom-on-focus */
-    .form-group input,
-    .form-group textarea,
-    .form-group select { font-size: 16px; padding: 14px 0; }
+    .section-header { margin-bottom: 48px; }
+    p { max-width: 32ch; line-height: 1.8; color: rgba(255,255,255,0.65); }
 
     /* ── Navigation — 15-20% reduced height, more elegant ── */
     .nav-links { display: none; }
@@ -2209,11 +2258,9 @@ a { text-decoration: none; }
         letter-spacing: 0.18em;
         border-radius: 6px;
     }
-    .mobile-nav-call { font-size: 16px; }
     .mobile-menu-footer {
         left: 28px; right: 28px;
-        bottom: calc(env(safe-area-inset-bottom) + 20px);
-        font-size: 9px;
+        bottom: calc(env(safe-area-inset-bottom) + 24px);
     }
 
     /* ── Hero — Editorial, Unforgettable First Screen ── */
@@ -2298,7 +2345,7 @@ a { text-decoration: none; }
     .hero-vignette { display: none; }
 
     /* ── About Section — Balanced, Editorial ── */
-    .about-section { padding: 56px 0; }
+    .about-section { padding: 80px 0; }
     .about-layout { grid-template-columns: 1fr; gap: 0; }
     .about-label-col {
         flex-direction: row;
@@ -2364,7 +2411,7 @@ a { text-decoration: none; }
     }
 
     /* ── Featured Projects — Compact, Sophisticated ── */
-    .projects-section { padding: 56px 0; }
+    .projects-section { padding: 80px 0; }
     .projects-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -2419,7 +2466,7 @@ a { text-decoration: none; }
     }
 
     /* ── Services — Premium Editorial Cards ── */
-    .services-section { padding: 56px 0; }
+    .services-section { padding: 80px 0; }
     .services-grid {
         grid-template-columns: 1fr;
         gap: 0;
@@ -2466,7 +2513,7 @@ a { text-decoration: none; }
     .service-link { font-size: 9px; margin-top: 4px; letter-spacing: 2px; }
 
     /* ── Design Journey — Luxury Timeline ── */
-    .process-section { padding: 56px 0; }
+    .process-section { padding: 80px 0; }
     .process-layout { grid-template-columns: 1fr; gap: 28px; }
     .process-header-col { position: static; }
     .process-title { font-size: clamp(1.9rem, 8vw, 2.5rem); margin: 12px 0 20px; }
@@ -2520,7 +2567,7 @@ a { text-decoration: none; }
     }
 
     /* ── Testimonials — Luxury Carousel Cards ── */
-    .testimonials-section { padding: 56px 0; }
+    .testimonials-section { padding: 80px 0; }
     .testimonials-header { margin-bottom: 36px; }
     .testimonials-track {
         grid-template-columns: 1fr;
@@ -2553,7 +2600,7 @@ a { text-decoration: none; }
     .testimonial-location { font-size: 9px; letter-spacing: 1.5px; }
 
     /* ── Journal — Editorial Magazine Layout ── */
-    .insights-section { padding: 56px 0; }
+    .insights-section { padding: 80px 0; }
     .insights-grid {
         grid-template-columns: 1fr;
         gap: 0;
@@ -2621,98 +2668,104 @@ a { text-decoration: none; }
     .insight-author { font-size: 9px; }
     .insight-date { font-size: 9px; }
 
-    /* ── Contact — Compact, Luxury Consultation ── */
-    .contact-section { padding: 56px 0; }
+    /* ── Contact — Clean, Premium, No Cards ── */
+    .contact-section { padding: 80px 0; }
     .contact-layout {
         grid-template-columns: 1fr;
-        gap: 32px;
+        gap: 40px;
     }
     .contact-layout::before { display: none; }
     .contact-info { position: static; }
     .contact-title {
-        font-size: clamp(1.9rem, 8vw, 2.5rem);
-        margin: 12px 0 20px;
+        font-size: clamp(2rem, 9vw, 2.8rem);
+        margin: 12px 0 16px;
+        font-weight: 300;
+        line-height: 1.15;
     }
-    .contact-trust {
-        font-size: 0.78rem;
-        gap: 6px;
-        margin-top: 16px;
-        flex-wrap: wrap;
-    }
-    .contact-luxury-info {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-top: 24px;
+    .contact-trust { display: none; }
+    .contact-checklist {
+        margin-top: 20px;
         padding-top: 20px;
+        gap: 10px;
     }
-    .luxury-info-item {
-        text-align: center;
-        padding: 14px 8px;
-        background: rgba(255,255,255,0.04);
-        border-radius: 8px;
-        border: 1px solid rgba(200, 169, 126, 0.12);
+    .contact-check-item {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.6);
+        letter-spacing: 0.01em;
     }
-    .luxury-info-label { font-size: 0.65rem; letter-spacing: 0.1em; }
-    .luxury-info-value { font-size: 0.9rem; }
     .contact-details {
         display: grid;
         grid-template-columns: 1fr;
         gap: 0;
-        margin-top: 24px;
+        margin-top: 28px;
     }
-    .contact-detail-item { padding: 14px 0; }
-    .contact-detail-label { font-size: 8px; letter-spacing: 2.5px; }
+    .contact-detail-item { padding: 16px 0; }
+    .contact-detail-label { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; }
     .contact-detail-value { font-size: 16px; }
     .contact-form-wrapper {
-        padding: 28px 22px;
+        padding: 28px 20px;
         border-radius: 12px;
-        border: 1px solid rgba(200, 169, 126, 0.2);
+        border: 1px solid rgba(200, 169, 126, 0.15);
+        background: rgba(255,255,255,0.04);
+        box-shadow: none;
     }
     .form-row { grid-template-columns: 1fr; gap: 0; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { font-size: 0.7rem; margin-bottom: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { font-size: 10px; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        font-size: 16px;
+        height: 56px;
+        padding: 0 16px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        border-color: var(--accent-gold);
+        background: rgba(255,255,255,0.07);
+    }
+    .form-group textarea { height: auto; padding: 16px; }
     .btn-form-submit {
         padding: 18px 24px;
         font-size: 0.72rem;
-        border-radius: 8px;
+        border-radius: 12px;
         margin-top: 8px;
     }
 
-    /* ── Footer — Compact & Elegant ── */
-    .footer-top-bar { padding: 32px 0; }
+    /* ── Footer — Simplified, Compact & Elegant ── */
+    .footer-top-bar { padding: 40px 0 24px; }
     .footer-top-inner {
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         align-items: flex-start;
     }
-    .footer-logo {
-        font-size: 1.8rem;
-        letter-spacing: 4px;
-        margin-bottom: 4px;
-    }
-    .footer-tagline { font-size: 9px; letter-spacing: 2px; }
+    .footer-logo { font-size: 1.2rem; letter-spacing: 0.05em; margin-bottom: 2px; }
+    .footer-tagline { font-size: 10px; letter-spacing: 0.08em; opacity: 0.5; }
     .footer-social { gap: 16px; flex-wrap: wrap; }
-    .social-link { font-size: 10px; letter-spacing: 1.5px; }
-    .footer-body { padding-top: 32px; padding-bottom: 32px; }
+    .social-link { font-size: 10px; letter-spacing: 0.08em; }
+    .footer-body { padding-top: 24px; padding-bottom: 24px; }
     .footer-cols {
         grid-template-columns: 1fr 1fr;
-        gap: 28px 20px;
+        gap: 24px 16px;
     }
     .footer-col { gap: 10px; }
-    .footer-col-label { font-size: 8px; margin-bottom: 4px; }
+    .footer-col-label { font-size: 8px; letter-spacing: 0.08em; margin-bottom: 4px; }
     .footer-col a,
-    .footer-col span { font-size: 13px; }
-    .footer-col--newsletter p { font-size: 12px; }
+    .footer-col span { font-size: 12px; letter-spacing: 0.01em; }
+    .footer-col--newsletter { display: none; }
     .footer-bottom { padding: 20px 0; }
     .footer-bottom-inner {
         flex-direction: column;
         align-items: flex-start;
-        gap: 10px;
+        gap: 8px;
     }
-    .footer-copy { font-size: 10px; }
-    .footer-legal { gap: 14px; flex-wrap: wrap; }
-    .footer-legal a { font-size: 9px; }
+    .footer-copy { font-size: 10px; opacity: 0.45; }
+    .footer-legal { gap: 12px; flex-wrap: wrap; }
+    .footer-legal a { font-size: 9px; letter-spacing: 0.04em; opacity: 0.45; }
 
     /* ── Sticky Mobile CTA ── */
     .mobile-sticky-cta {
