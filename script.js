@@ -288,12 +288,16 @@ if (menuBtn && mobileMenu) {
         mobileMenu.classList.remove('open');
         menuBtn.classList.remove('open');
         document.body.style.overflow = '';
+        const fixedCta = document.querySelector('.mobile-fixed-cta');
+        if (fixedCta) fixedCta.style.display = 'block';
     };
 
     menuBtn.addEventListener('click', () => {
         const open = mobileMenu.classList.toggle('open');
         menuBtn.classList.toggle('open', open);
         document.body.style.overflow = open ? 'hidden' : '';
+        const fixedCta = document.querySelector('.mobile-fixed-cta');
+        if (fixedCta) fixedCta.style.display = open ? 'none' : 'block';
     });
 
     mobileMenu.querySelectorAll('a').forEach(link => {

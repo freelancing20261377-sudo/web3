@@ -714,6 +714,40 @@ a { text-decoration: none; }
 
 .mobile-menu.open .mobile-menu-footer { opacity: 1; }
 
+/* Mobile Fixed CTA */
+.mobile-fixed-cta {
+    display: none;
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom) + 16px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 800;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--royal-green);
+    background: var(--accent-gold);
+    padding: 16px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(200, 169, 126, 0.4);
+    transition: transform 0.3s var(--ease-luxury), box-shadow 0.3s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-fixed-cta:active {
+    transform: translateX(-50%) scale(0.96);
+    box-shadow: 0 4px 16px rgba(200, 169, 126, 0.3);
+}
+
+/* Hide when mobile menu is open */
+.mobile-menu.open ~ .mobile-fixed-cta,
+.mobile-menu.open + * .mobile-fixed-cta {
+    display: none !important;
+}
+
 /* ==========================================================================
    HERO SCROLL SEQUENCE
    ========================================================================== */
@@ -2114,6 +2148,7 @@ a { text-decoration: none; }
     .nav-actions { display: none; }
     .nav-cta-box { display: none; }
     .nav-menu-btn { display: flex; }
+    .mobile-fixed-cta { display: block; }
     .site-header {
         top: 12px;
         width: calc(100% - 24px);
