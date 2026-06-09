@@ -427,3 +427,42 @@ computeSequences();
         }
     });
 })();
+
+// ============================================================
+// 15. MOBILE STICKY CTA — show after hero, hide at contact
+// ============================================================
+(() => {
+    const stickyCta = document.getElementById('mobile-sticky-cta');
+    if (!stickyCta || !isTouch) return;
+
+    const heroSection = document.querySelector('.scroll-sequence-container');
+    const contactSection = document.getElementById('contact');
+
+    let lastScrollY = 0;
+    let ticking = false;
+
+    const updateStickyCta = () => {
+        const scrollY = window.scrollY;
+        const heroBottom = heroSection ? heroSection.offsetTop + heroSection.offsetHeight : 600;
+        const contactTop = contactSection ? contactSection.offsetTop - window.innerHeight * 0.5 : Infinity;
+
+        if (scrollY > heroBottom && scrollY < contactTop) {
+            stickyCta.classList.add('visible');
+        } else {
+            stickyCta.classList.remove('visible');
+        }
+        ticking = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(updateStickyCta);
+            ticking = true;
+        }
+    }, { passive: true });
+
+    // Close sticky CTA when clicking its link
+    stickyCta.querySelector('a').addEventListener('click', () => {
+        stickyCta.classList.remove('visible');
+    });
+})();
