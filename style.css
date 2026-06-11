@@ -2680,11 +2680,11 @@ a { text-decoration: none; }
 
     /* ── Hero — Cinematic Mobile First Screen ── */
     #sequence-canvas { display: none; }
-    .scroll-sequence-container { height: 80svh; min-height: 80svh; }
+    .scroll-sequence-container { height: 100svh; min-height: 100svh; }
     .sticky-wrapper {
         position: relative;
-        height: 80svh;
-        min-height: 80svh;
+        height: 100svh;
+        min-height: 100svh;
         padding: 0 24px;
         display: flex;
         flex-direction: column;
