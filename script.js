@@ -470,3 +470,150 @@ computeSequences();
         stickyCta.classList.remove('visible');
     });
 })();
+
+// ============================================================
+// 16. ADVANCED INTERACTIVE EFFECTS (Stats counter, Magnetic CTAs, Testimonials Drag)
+// ============================================================
+(() => {
+    // 16.1 Stat counter animation
+    const initCounter = () => {
+        const statsContainer = document.querySelector('.about-stats');
+        const statNums = document.querySelectorAll('.about-stat-num');
+        if (!statsContainer || statNums.length === 0) return;
+
+        const runCountUp = (el) => {
+            const targetText = el.innerText || '';
+            const match = targetText.match(/^([0-9]+)/);
+            if (!match) return; // ignore non-numeric entries like "End-to-End"
+
+            const targetVal = parseInt(match[1], 10);
+            const suffix = targetText.slice(match[0].length);
+            const supElement = el.querySelector('sup');
+            const supHtml = supElement ? supElement.outerHTML : '';
+
+            let start = 0;
+            const duration = 2000; // 2 seconds
+            let startTime = null;
+
+            const animate = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const progress = Math.min((timestamp - startTime) / duration, 1);
+                // Cubic ease-out
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.floor(easeProgress * targetVal);
+
+                if (supHtml) {
+                    el.innerHTML = `${currentVal}${supHtml}`;
+                } else {
+                    el.innerText = `${currentVal}${suffix}`;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+
+            requestAnimationFrame(animate);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    statNums.forEach(runCountUp);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+
+        observer.observe(statsContainer);
+    };
+
+    // 16.2 Magnetic buttons (desktop only)
+    const initMagneticButtons = () => {
+        if (isTouch) return; // disabled on mobile touch devices
+        
+        const btns = document.querySelectorAll('.btn-hero-primary, .btn-hero-ghost');
+        btns.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                // Suspend transition temporarily for lag-free cursor tracking
+                btn.style.transition = 'none';
+                
+                // Pull button towards mouse by max 12px
+                btn.style.transform = `translate(${x * 0.22}px, ${y * 0.22}px) translateY(-3px)`;
+                btn.style.boxShadow = '0 16px 36px rgba(200, 169, 126, 0.45), 0 6px 12px rgba(0,0,0,0.2)';
+                
+                const content = btn.querySelector('span');
+                if (content) {
+                    content.style.transition = 'none';
+                    content.style.transform = `translate(${x * 0.08}px, ${y * 0.08}px)`;
+                }
+            });
+            
+            btn.addEventListener('mouseleave', () => {
+                // Restore transition and original state
+                btn.style.transition = '';
+                btn.style.transform = '';
+                btn.style.boxShadow = '';
+                
+                const content = btn.querySelector('span');
+                if (content) {
+                    content.style.transition = '';
+                    content.style.transform = '';
+                }
+            });
+        });
+    };
+
+    // 16.3 Testimonials Mouse Drag to Scroll (desktop only)
+    const initTestimonialsDrag = () => {
+        const track = document.querySelector('.testimonials-track');
+        if (!track) return;
+        
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        track.addEventListener('mousedown', (e) => {
+            isDown = true;
+            track.classList.add('active');
+            startX = e.pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+            // Temporarily disable scroll-snap during dragging so dragging is smooth
+            track.style.scrollSnapType = 'none';
+            track.style.cursor = 'grabbing';
+        });
+        
+        track.addEventListener('mouseleave', () => {
+            if (!isDown) return;
+            isDown = false;
+            track.classList.remove('active');
+            track.style.scrollSnapType = '';
+            track.style.cursor = '';
+        });
+        
+        track.addEventListener('mouseup', () => {
+            if (!isDown) return;
+            isDown = false;
+            track.classList.remove('active');
+            track.style.scrollSnapType = '';
+            track.style.cursor = '';
+        });
+        
+        track.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - track.offsetLeft;
+            const walk = (x - startX) * 1.5;
+            track.scrollLeft = scrollLeft - walk;
+        });
+    };
+
+    // Initialize all advanced effects
+    initCounter();
+    initMagneticButtons();
+    initTestimonialsDrag();
+})();
