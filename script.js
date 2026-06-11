@@ -120,7 +120,7 @@ const BATCH_DELAY = 0;    // no gap between batches
 const canvas1   = document.getElementById('sequence-canvas');
 const ctx1      = canvas1 ? canvas1.getContext('2d') : null;
 
-const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.jpg`;
+const heroFramePath    = (i) => `images/frame_${String(i).padStart(4, '0')}.webp`;
 
 const imgs1 = [];
 const seq1  = { frame: 0 };
