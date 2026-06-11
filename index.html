@@ -11,14 +11,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     <!-- Preload first hero frame for desktop, and mobile background for mobile -->
-    <link rel="preload" href="mobilebackground.png" as="image" media="(max-width: 768px)">
-    <link rel="preload" href="images/frame_0001.jpg" as="image" media="(min-width: 769px)" fetchpriority="high">
-    <link rel="preload" href="images/frame_0002.jpg" as="image" media="(min-width: 769px)">
-    <link rel="preload" href="images/frame_0003.jpg" as="image" media="(min-width: 769px)">
+    <link rel="preload" href="homepage/image.webp" as="image" media="(max-width: 768px)">
+    <link rel="preload" href="images/frame_0001.webp" as="image" media="(min-width: 769px)" fetchpriority="high">
+    <link rel="preload" href="images/frame_0002.webp" as="image" media="(min-width: 769px)">
+    <link rel="preload" href="images/frame_0003.webp" as="image" media="(min-width: 769px)">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
+
+    <!-- Floating Mobile Book Consultation CTA -->
+    <a href="#contact" class="mobile-float-cta" aria-label="Book Consultation">
+        <span>Book Consultation</span>
+    </a>
 
     <!-- Custom Cursor -->
     <div class="cursor-dot" id="cursor-dot"></div>
@@ -95,7 +100,6 @@
                 <p class="hero-subtitle">Future Space crafts luxury residential and commercial environments through architecture, interiors, visualization, and BIM-led design solutions.</p>
                 <div class="hero-actions">
                     <a href="#projects" class="btn btn-hero-primary"><span>View Projects</span></a>
-                    <a href="#contact" class="btn btn-hero-ghost"><span>Book Consultation</span></a>
                 </div>
             </div>
 

@@ -863,6 +863,9 @@ a { text-decoration: none; }
 
 .mobile-menu.open .mobile-menu-footer { opacity: 1; }
 
+/* Floating mobile Book Consultation — hidden on desktop */
+.mobile-float-cta { display: none; }
+
 /* Mobile Fixed CTA */
 .mobile-fixed-cta {
     display: none;
@@ -2573,6 +2576,40 @@ a { text-decoration: none; }
         font-size: clamp(1rem, 4.5vw, 1.1rem);
         line-height: 1.75;
         max-width: 48ch;
+    }
+
+    /* ── Floating Book Consultation CTA ── */
+    .mobile-float-cta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        right: -1px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 9999;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        padding: 20px 14px;
+        border-radius: 12px 0 0 12px;
+        background: rgba(11, 46, 32, 0.88);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(200, 169, 126, 0.35);
+        border-right: none;
+        box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+        color: var(--accent-gold);
+        font-family: var(--font-sans);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background 0.3s, box-shadow 0.3s;
+    }
+    .mobile-float-cta:active {
+        background: var(--accent-gold);
+        color: var(--royal-green);
     }
 
     /* ── Navigation — Elegant, responsive glassmorphic nav pill ── */
