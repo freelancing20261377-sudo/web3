@@ -2697,7 +2697,7 @@ a { text-decoration: none; }
                 rgba(11, 46, 32, 0.1) 45%,
                 rgba(11, 46, 32, 0.75) 75%,
                 var(--footer-bg) 100%),
-            url('mobilebackground.jpg');
+            url('mobilebackground.png');
         background-size: cover;
         background-position: center center;
     }
