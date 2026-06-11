@@ -2817,16 +2817,7 @@ a { text-decoration: none; }
         height: 1.5px;
         background: var(--accent-gold);
     }
-    .hero-subtitle {
-        font-size: clamp(1rem, 4.5vw, 1.1rem);
-        line-height: 1.75;
-        margin: 1.4rem auto 1.8rem;
-        max-width: 42ch;
-        font-weight: 400;
-        color: rgba(255,255,255,0.8);
-        text-shadow: none;
-        text-align: center;
-    }
+    .hero-subtitle { display: none; }
     .hero-actions {
         width: 100%;
         display: flex;
