@@ -338,8 +338,52 @@ const initForm = () => {
     const success = document.getElementById('form-success');
     if (!form) return;
 
+    const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+    // Clear error style when user modifies field
+    requiredFields.forEach(field => {
+        const clearError = () => field.classList.remove('error');
+        field.addEventListener('input', clearError);
+        field.addEventListener('change', clearError);
+    });
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        
+        let hasError = false;
+        let firstInvalid = null;
+
+        requiredFields.forEach(field => {
+            const value = field.value.trim();
+            let isInvalid = false;
+
+            if (!value) {
+                isInvalid = true;
+            } else if (field.type === 'email') {
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailPattern.test(value)) {
+                    isInvalid = true;
+                }
+            }
+
+            if (isInvalid) {
+                field.classList.add('error');
+                hasError = true;
+                if (!firstInvalid) {
+                    firstInvalid = field;
+                }
+            } else {
+                field.classList.remove('error');
+            }
+        });
+
+        if (hasError) {
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
+            return;
+        }
+
         const btn = form.querySelector('.btn-form-submit');
         if (btn) {
             btn.style.pointerEvents = 'none';
@@ -389,6 +433,44 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 // ============================================================
+// 12.5 ACTIVE NAVIGATION HIGHLIGHTING (IntersectionObserver)
+// ============================================================
+const initActiveNavHighlight = () => {
+    const sections = document.querySelectorAll('section[id], .scroll-sequence-container');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '-35% 0px -45% 0px',
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                let id = entry.target.getAttribute('id');
+                if (id === 'hero-sequence') id = '';
+                
+                const activeHref = id ? `#${id}` : '#';
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    link.classList.toggle('active', href === activeHref);
+                });
+
+                mobileLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    link.classList.toggle('active', href === activeHref);
+                });
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
+};
+
+// ============================================================
 // 13. INIT
 // ============================================================
 scaleAllCanvases();
@@ -400,6 +482,7 @@ initReveal();
 initForm();
 updateHeader();
 computeSequences();
+initActiveNavHighlight();
 
 // ============================================================
 // 14. LAZY IMAGE OBSERVER — fade-in + LQIP blur-up + skeleton
@@ -407,7 +490,7 @@ computeSequences();
 (() => {
     const onLoad = (img) => {
         img.classList.add('loaded');
-        const wrapper = img.closest('.project-image-wrapper');
+        const wrapper = img.closest('.project-image-wrapper, .about-image-accent, .service-image, .insight-image');
         if (wrapper) wrapper.classList.add('img-loaded');
     };
 
