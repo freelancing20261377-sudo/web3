@@ -2538,7 +2538,13 @@ a { text-decoration: none; }
    ========================================================================== */
 @media (max-width: 768px) {
     /* ── Base ── */
-    html, body { overflow-x: hidden; }
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    main { overflow-x: hidden; }
     .container { padding: 0 24px; }
     .section { padding: 80px 0; border-bottom-color: rgba(200, 169, 126, 0.18); }
     .section-label {
@@ -2680,17 +2686,24 @@ a { text-decoration: none; }
 
     /* ── Hero — Cinematic Mobile First Screen ── */
     #sequence-canvas { display: none; }
-    .scroll-sequence-container { height: auto; min-height: unset; }
+    .scroll-sequence-container {
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
     .sticky-wrapper {
         position: relative;
-        height: 88svh;
-        min-height: 520px;
-        max-height: 820px;
-        padding: 0 24px 48px;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: calc(env(safe-area-inset-top) + 90px) 24px calc(env(safe-area-inset-bottom) + 80px);
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
+        gap: 18px;
         text-align: center;
         /* Gradient: transparent at top so arches are visible, stronger at bottom for text readability */
         background-image:
@@ -2704,27 +2717,25 @@ a { text-decoration: none; }
         background-size: cover;
         /* Show the beautiful golden arched doorways & wooden lattice at top */
         background-position: 30% top;
+        background-repeat: no-repeat;
         background-attachment: scroll;
     }
     .hero-overlay {
-        /* Override desktop absolute positioning */
         position: relative !important;
         left: auto !important;
         right: auto !important;
         top: auto !important;
         bottom: auto !important;
         transform: none !important;
-        /* Push to bottom of sticky-wrapper flex column */
-        margin-top: auto;
         width: 100%;
-        max-width: 100%;
+        max-width: 520px;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        /* Ensure visible despite desktop opacity:0 */
         opacity: 1 !important;
         pointer-events: auto !important;
+        gap: 18px;
     }
     #hero-text-1 {
         pointer-events: auto !important;
@@ -2745,9 +2756,9 @@ a { text-decoration: none; }
         text-transform: uppercase;
     }
     .hero-title {
-        font-size: clamp(2rem, 8.5vw, 2.5rem);
-        line-height: 1.2;
-        letter-spacing: -0.02em;
+        font-size: clamp(1.95rem, 8vw, 2.35rem);
+        line-height: 1.14;
+        letter-spacing: -0.04em;
         max-width: 100%;
         margin: 0 auto;
         text-align: center;
@@ -2780,19 +2791,19 @@ a { text-decoration: none; }
         text-align: center;
     }
     .hero-actions {
-        flex-direction: row;
-        gap: 12px;
-        justify-content: center;
         width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: auto;
     }
     .hero-actions .btn {
-        width: auto;
-        flex: 1;
+        width: 100%;
         max-width: none;
-        padding: 0.95rem 1.2rem;
-        font-size: 0.7rem;
-        letter-spacing: 0.12em;
-        border-radius: 100px; /* Pill buttons */
+        padding: 1rem 1.4rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        border-radius: 100px;
     }
     .hero-scroll-cue { display: none; }
     .hero-marquee { display: none; }
