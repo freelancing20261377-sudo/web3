@@ -2721,130 +2721,127 @@ a { text-decoration: none; }
         bottom: calc(env(safe-area-inset-bottom) + 32px);
     }
 
-    /* ── Hero — Cinematic Mobile First Screen ── */
+    /* ── Hero — Premium Fullscreen Mobile ── */
     #sequence-canvas { display: none; }
     .scroll-sequence-container {
         height: 100vh;
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
+        overflow: hidden;
     }
     .sticky-wrapper {
         position: relative;
+        width: 100%;
         height: 100vh;
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
-        padding: calc(env(safe-area-inset-top) + 90px) 24px calc(env(safe-area-inset-bottom) + 80px);
+        padding: calc(env(safe-area-inset-top) + 80px) 28px calc(env(safe-area-inset-bottom) + 40px);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 18px;
         text-align: center;
-        /* Gradient: transparent at top so arches are visible, stronger at bottom for text readability */
+        overflow: hidden;
         background-image:
-            linear-gradient(180deg,
-                rgba(11, 46, 32, 0.10) 0%,
-                rgba(11, 46, 32, 0.05) 25%,
-                rgba(11, 46, 32, 0.15) 50%,
-                rgba(11, 46, 32, 0.65) 72%,
-                rgba(11, 46, 32, 0.90) 100%),
+            linear-gradient(to bottom,
+                rgba(0,0,0,0.30) 0%,
+                rgba(0,0,0,0.45) 50%,
+                rgba(0,0,0,0.55) 100%),
             url('homepage/image.webp');
         background-size: cover;
-        /* Show the beautiful golden arched doorways & wooden lattice at top */
-        background-position: 30% top;
+        background-position: center center;
         background-repeat: no-repeat;
         background-attachment: scroll;
     }
     .hero-overlay {
         position: relative !important;
-        left: auto !important;
-        right: auto !important;
-        top: auto !important;
-        bottom: auto !important;
+        left: auto !important; right: auto !important;
+        top: auto !important; bottom: auto !important;
         transform: none !important;
-        width: 100%;
-        max-width: 520px;
+        width: 90%;
+        max-width: 480px;
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 0;
         text-align: center;
         opacity: 1 !important;
         pointer-events: auto !important;
-        gap: 18px;
     }
     #hero-text-1 {
+        opacity: 1 !important;
         pointer-events: auto !important;
-        animation: mobileHeroFadeIn 1.2s var(--ease-luxury) forwards;
+        animation: mobileHeroFadeIn 1s ease forwards;
     }
     @keyframes mobileHeroFadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
     }
     #hero-text-2, #hero-text-3, #hero-text-4 { display: none; }
+
     .hero-eyebrow {
-        font-size: 0.65rem;
-        letter-spacing: 0.3em;
-        margin-bottom: 1.2rem;
+        font-size: 0.6rem;
+        letter-spacing: 0.28em;
         color: var(--accent-gold);
-        text-shadow: 0 1px 8px rgba(0,0,0,0.6), 0 0 20px rgba(0,0,0,0.3);
-        font-weight: 600;
+        font-weight: 500;
         text-transform: uppercase;
+        margin-bottom: 18px;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.5);
     }
     .hero-title {
-        font-size: clamp(1.95rem, 8vw, 2.35rem);
-        line-height: 1.14;
-        letter-spacing: -0.04em;
-        max-width: 100%;
-        margin: 0 auto;
+        font-size: clamp(2.2rem, 9vw, 2.8rem);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        width: 100%;
         text-align: center;
+        text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+        margin-bottom: 0;
     }
     .hero-title em {
         font-family: var(--font-serif);
         font-style: italic;
-        background: var(--grad-gold);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: goldTextShimmer 6s linear infinite;
-        background-size: 200% auto;
+        color: var(--accent-gold);
+        -webkit-text-fill-color: var(--accent-gold);
     }
     .hero-title::after {
         content: '';
         display: block;
-        margin: 10px auto 0;
-        width: 40px;
-        height: 1.5px;
-        background: var(--accent-gold);
+        margin: 14px auto 0;
+        width: 36px;
+        height: 1px;
+        background: rgba(200,169,126,0.7);
     }
     .hero-subtitle {
-        font-size: clamp(0.9rem, 4vw, 1rem);
+        font-size: 0.92rem;
         line-height: 1.7;
-        margin: 1rem auto 0;
-        max-width: 38ch;
-        font-weight: 400;
-        color: rgba(255,255,255,0.8);
+        margin: 20px auto 0;
+        max-width: 34ch;
+        font-weight: 300;
+        color: rgba(255,255,255,0.75);
         text-align: center;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.4);
     }
     .hero-actions {
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 16px;
-        margin-top: auto;
+        gap: 12px;
+        margin-top: 32px;
     }
     .hero-actions .btn {
         width: 100%;
-        max-width: none;
-        padding: 1rem 1.4rem;
-        font-size: 0.72rem;
-        letter-spacing: 0.16em;
+        padding: 1rem 1.5rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.2em;
         border-radius: 100px;
+        text-align: center;
     }
     .hero-scroll-cue { display: none; }
-    .hero-marquee { display: none; }
+    .hero-marquee    { display: none; }
     .hero-brand-badge { display: none; }
-    .hero-vignette { display: none; }
+    .hero-vignette   { display: none; }
 
     /* ── About Section — Balanced, Editorial ── */
     .about-section { padding: 80px 0; }
