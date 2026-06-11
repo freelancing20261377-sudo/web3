@@ -417,10 +417,15 @@ let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        scaleAllCanvases();
-        cacheOffsets();
-        const f1 = Math.round(seq1.frame);
-        if (ctx1 && imgs1[f1]) drawCover(imgs1[f1], ctx1);
+        if (!isMobile()) {
+            scaleAllCanvases();
+            cacheOffsets();
+            const f1 = Math.round(seq1.frame);
+            if (ctx1 && imgs1[f1]) drawCover(imgs1[f1], ctx1);
+        } else {
+            const seq = document.querySelector('.scroll-sequence-container');
+            if (seq) seq.style.removeProperty('height');
+        }
     }, 100);
 });
 
@@ -428,7 +433,7 @@ window.addEventListener('resize', () => {
 // 12. SCROLL LISTENER
 // ============================================================
 window.addEventListener('scroll', () => {
-    computeSequences();
+    if (!isMobile()) computeSequences();
     updateHeader();
 }, { passive: true });
 
@@ -473,15 +478,19 @@ const initActiveNavHighlight = () => {
 // ============================================================
 // 13. INIT
 // ============================================================
-scaleAllCanvases();
-cacheOffsets();
+const isMobile = () => window.innerWidth <= 768;
 
-preloadSeq(imgs1, heroFramePath,    ctx1, canvas1, TOTAL_FRAMES_HERO);
-requestAnimationFrame(renderLoop);
+if (!isMobile()) {
+    scaleAllCanvases();
+    cacheOffsets();
+    preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
+    requestAnimationFrame(renderLoop);
+    computeSequences();
+}
+
 initReveal();
 initForm();
 updateHeader();
-computeSequences();
 initActiveNavHighlight();
 
 // ============================================================
