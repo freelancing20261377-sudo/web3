@@ -863,8 +863,8 @@ a { text-decoration: none; }
 
 .mobile-menu.open .mobile-menu-footer { opacity: 1; }
 
-/* Floating mobile Book Consultation — hidden on desktop */
-.mobile-float-cta { display: none; }
+/* Floating mobile Book Consultation — hidden everywhere */
+.mobile-float-cta { display: none !important; }
 
 /* Mobile Fixed CTA */
 .mobile-fixed-cta {
@@ -2817,7 +2817,15 @@ a { text-decoration: none; }
         height: 1.5px;
         background: var(--accent-gold);
     }
-    .hero-subtitle { display: none; }
+    .hero-subtitle {
+        font-size: clamp(0.9rem, 4vw, 1rem);
+        line-height: 1.7;
+        margin: 1rem auto 0;
+        max-width: 38ch;
+        font-weight: 400;
+        color: rgba(255,255,255,0.8);
+        text-align: center;
+    }
     .hero-actions {
         width: 100%;
         display: flex;
