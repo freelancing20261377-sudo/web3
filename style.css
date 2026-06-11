@@ -3439,10 +3439,10 @@ a { text-decoration: none; }
 @media (max-width: 480px) {
     /* ── Base ── */
     .scroll-sequence-container {
-        height: 100vh;
         height: 100svh;
         height: 100dvh;
         min-height: 480px;
+        max-height: none;
         overflow: hidden;
     }
     .container { padding: 0 20px; }
@@ -3461,16 +3461,17 @@ a { text-decoration: none; }
 
     /* ── Hero ── */
     .sticky-wrapper {
-        padding: 0 20px 44px;
+        height: 100%;
+        min-height: 100svh;
+        min-height: -webkit-fill-available;
+        padding: calc(env(safe-area-inset-top) + 80px) 20px
+                 calc(env(safe-area-inset-bottom) + 100px);
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: flex-start;
+        justify-content: center;
         text-align: center;
-        height: 85svh;
-        min-height: 480px;
-        max-height: 700px;
-        background-position: 25% top;
+        background-position: center top;
     }
     .hero-overlay {
         margin-top: auto;
