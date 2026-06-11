@@ -2737,7 +2737,7 @@ a { text-decoration: none; }
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
-        padding: calc(env(safe-area-inset-top) + 80px) 28px calc(env(safe-area-inset-bottom) + 40px);
+        padding: calc(env(safe-area-inset-top) + 80px) 28px 0;
         display: flex;
         flex-direction: column;
         align-items: center;
