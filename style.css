@@ -2856,7 +2856,11 @@ a { text-decoration: none; }
     .hero-vignette   { display: none; }
 
     /* ── About Section — Balanced, Editorial ── */
-    .about-section { padding: 80px 0; }
+    .about-section {
+        padding: 80px 0;
+        background: transparent;
+        border-top: none;
+    }
     .about-layout { grid-template-columns: 1fr; gap: 0; }
     .about-label-col {
         flex-direction: row;
@@ -2936,7 +2940,11 @@ a { text-decoration: none; }
     }
 
     /* ── Featured Projects — Compact, Sophisticated ── */
-    .projects-section { padding: 80px 0; }
+    .projects-section {
+        padding: 80px 0;
+        background: transparent;
+        border-top: none;
+    }
     .projects-grid {
         grid-template-columns: 1fr;
         gap: 24px;
@@ -3256,7 +3264,11 @@ a { text-decoration: none; }
     .insight-date { font-size: 9px; }
 
     /* ── Contact — Clean, Premium, No Cards ── */
-    .contact-section { padding: 80px 0; }
+    .contact-section {
+        padding: 80px 0;
+        background: transparent;
+        border-top: none;
+    }
     .contact-layout {
         grid-template-columns: 1fr;
         gap: 40px;
