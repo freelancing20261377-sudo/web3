@@ -2548,16 +2548,7 @@ a { text-decoration: none; }
         overflow-x: hidden;
     }
     body {
-        background-image:
-            linear-gradient(to bottom,
-                rgba(0,0,0,0.30) 0%,
-                rgba(0,0,0,0.45) 50%,
-                rgba(0,0,0,0.55) 100%),
-            url('homepage/image.webp');
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+        background: #F5F0E8;
     }
     main { overflow-x: hidden; }
     .container { padding: 0 24px; }
@@ -2741,6 +2732,7 @@ a { text-decoration: none; }
         min-height: 100vh;
         min-height: 100dvh;
         overflow: hidden;
+        background: #F5F0E8;
     }
     .sticky-wrapper {
         position: relative;
