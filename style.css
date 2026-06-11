@@ -2713,7 +2713,7 @@ a { text-decoration: none; }
                 rgba(11, 46, 32, 0.15) 50%,
                 rgba(11, 46, 32, 0.65) 72%,
                 rgba(11, 46, 32, 0.90) 100%),
-            url('mobilebackground.webp');
+            url('homepage/image.webp');
         background-size: cover;
         /* Show the beautiful golden arched doorways & wooden lattice at top */
         background-position: 30% top;
