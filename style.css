@@ -2680,40 +2680,51 @@ a { text-decoration: none; }
 
     /* ── Hero — Cinematic Mobile First Screen ── */
     #sequence-canvas { display: none; }
-    .scroll-sequence-container { height: 100svh; min-height: 100svh; }
+    .scroll-sequence-container { height: auto; min-height: unset; }
     .sticky-wrapper {
         position: relative;
-        height: 100svh;
-        min-height: 100svh;
-        padding: 0 24px;
+        height: 88svh;
+        min-height: 520px;
+        max-height: 820px;
+        padding: 0 24px 48px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         text-align: center;
+        /* Gradient: transparent at top so arches are visible, stronger at bottom for text readability */
         background-image:
             linear-gradient(180deg,
-                rgba(11, 46, 32, 0.45) 0%,
-                rgba(11, 46, 32, 0.1) 45%,
-                rgba(11, 46, 32, 0.75) 75%,
-                var(--footer-bg) 100%),
+                rgba(11, 46, 32, 0.10) 0%,
+                rgba(11, 46, 32, 0.05) 25%,
+                rgba(11, 46, 32, 0.15) 50%,
+                rgba(11, 46, 32, 0.65) 72%,
+                rgba(11, 46, 32, 0.90) 100%),
             url('mobilebackground.png');
         background-size: cover;
-        background-position: center center;
+        /* Show the beautiful golden arched doorways & wooden lattice at top */
+        background-position: 30% top;
+        background-attachment: scroll;
     }
     .hero-overlay {
-        left: 0;
-        right: 0;
+        /* Override desktop absolute positioning */
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        top: auto !important;
+        bottom: auto !important;
+        transform: none !important;
+        /* Push to bottom of sticky-wrapper flex column */
+        margin-top: auto;
+        width: 100%;
         max-width: 100%;
-        top: auto;
-        bottom: auto;
-        transform: none;
-        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         text-align: center;
+        /* Ensure visible despite desktop opacity:0 */
+        opacity: 1 !important;
+        pointer-events: auto !important;
     }
     #hero-text-1 {
         pointer-events: auto !important;
@@ -2729,8 +2740,8 @@ a { text-decoration: none; }
         letter-spacing: 0.3em;
         margin-bottom: 1.2rem;
         color: var(--accent-gold);
-        text-shadow: none;
-        font-weight: 500;
+        text-shadow: 0 1px 8px rgba(0,0,0,0.6), 0 0 20px rgba(0,0,0,0.3);
+        font-weight: 600;
         text-transform: uppercase;
     }
     .hero-title {
@@ -3384,24 +3395,24 @@ a { text-decoration: none; }
 
     /* ── Hero ── */
     .sticky-wrapper {
-        padding: 0 20px;
-        padding-bottom: 0;
+        padding: 0 20px 44px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         text-align: center;
-        height: 80svh;
-        min-height: 80svh;
+        height: 85svh;
+        min-height: 480px;
+        max-height: 700px;
+        background-position: 25% top;
     }
     .hero-overlay {
-        left: 0;
-        right: 0;
+        margin-top: auto;
+        width: 100%;
         max-width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
         text-align: center;
     }
     .hero-title {
