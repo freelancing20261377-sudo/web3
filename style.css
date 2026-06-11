@@ -2547,8 +2547,9 @@ a { text-decoration: none; }
         padding: 0;
         overflow-x: hidden;
     }
+    html { background-color: #F8F6F1; }
     body {
-        background: #F5F0E8;
+        background: #F8F6F1;
     }
     main { overflow-x: hidden; }
     .container { padding: 0 24px; }
@@ -2731,8 +2732,10 @@ a { text-decoration: none; }
         height: 100dvh;
         min-height: 100vh;
         min-height: 100dvh;
+        max-height: 100vh;
+        max-height: 100dvh;
         overflow: hidden;
-        background: #F5F0E8;
+        background: transparent;
     }
     .sticky-wrapper {
         position: relative;
@@ -3439,6 +3442,13 @@ a { text-decoration: none; }
    ========================================================================== */
 @media (max-width: 480px) {
     /* ── Base ── */
+    .scroll-sequence-container {
+        height: 100vh;
+        height: 100dvh;
+        max-height: 100vh;
+        max-height: 100dvh;
+        overflow: hidden;
+    }
     .container { padding: 0 20px; }
     .section { padding: 60px 0; }
     .section-title, .contact-title, .about-title, .process-title {
