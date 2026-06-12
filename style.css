@@ -3181,7 +3181,7 @@ a { text-decoration: none; }
     .testimonial-location { font-size: 9px; letter-spacing: 1.5px; }
 
     /* ── Journal — Editorial Magazine Layout ── */
-    .insights-section { padding: 80px 0; }
+    .insights-section { display: none; }
     .insights-grid {
         grid-template-columns: 1fr;
         gap: 0;
