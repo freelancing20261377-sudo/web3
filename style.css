@@ -2747,12 +2747,7 @@ a { text-decoration: none; }
         justify-content: center;
         text-align: center;
         overflow: hidden;
-        background-image:
-            linear-gradient(to bottom,
-                rgba(0,0,0,0.50) 0%,
-                rgba(0,0,0,0.60) 50%,
-                rgba(0,0,0,0.70) 100%),
-            url('homepage/image.webp');
+        background-image: url('homepage/image.webp');
         background-size: cover;
         background-position: center top;
         background-repeat: no-repeat;
