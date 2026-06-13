@@ -2726,29 +2726,19 @@ a { text-decoration: none; }
         bottom: calc(env(safe-area-inset-bottom) + 32px);
     }
 
-    /* ── Hero — Canvas Scroll Sequence on Mobile ── */
-    #sequence-canvas {
-        display: block;
-        position: absolute;
-        inset: 0;
-        width: 100% !important;
-        height: 100% !important;
-        object-fit: cover;
-        z-index: 1;
-    }
+    /* ── Hero — Static fullscreen image on mobile ── */
+    #sequence-canvas { display: none; }
     .scroll-sequence-container {
-        /* 220vh gives all 4 phases enough travel while cutting scroll distance
-           from ~3200px (380vh) to ~1850px on a 900px viewport. Images in the
-           next section start loading sooner, eliminating the load race. */
-        height: 220vh;
-        overflow: visible;
-        background: var(--footer-bg);
+        height: 100svh;
+        height: 100dvh;
+        min-height: 480px;
+        overflow: hidden;
+        background: transparent;
     }
     .sticky-wrapper {
-        position: sticky;
-        top: 0;
+        position: relative;
         width: 100%;
-        height: 100svh;
+        height: 100%;
         min-height: 480px;
         min-height: -webkit-fill-available;
         padding: calc(env(safe-area-inset-top) + 80px) 28px 80px;
@@ -2758,16 +2748,17 @@ a { text-decoration: none; }
         justify-content: center;
         text-align: center;
         overflow: hidden;
-        background-image: none;
-        background: transparent;
+        background-image: url('homepage/image.webp');
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+        background-attachment: scroll;
     }
     .hero-overlay {
-        position: absolute !important;
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(-50%, calc(-50% - 30px)) !important;
-        right: auto !important;
-        bottom: auto !important;
+        position: relative !important;
+        left: auto !important; right: auto !important;
+        top: auto !important; bottom: auto !important;
+        transform: none !important;
         width: 90%;
         max-width: 480px;
         display: flex;
@@ -2775,17 +2766,19 @@ a { text-decoration: none; }
         align-items: center;
         gap: 0;
         text-align: center;
-        z-index: 5;
-        opacity: 0;
-        transition: opacity 0.9s ease, transform 0.9s ease;
-        pointer-events: none;
-    }
-    .hero-overlay.active {
         opacity: 1 !important;
-        transform: translate(-50%, -50%) !important;
         pointer-events: auto !important;
     }
-    #hero-text-2, #hero-text-3, #hero-text-4 { display: flex; }
+    #hero-text-1 {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        animation: mobileHeroFadeIn 1s ease forwards;
+    }
+    @keyframes mobileHeroFadeIn {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+    #hero-text-2, #hero-text-3, #hero-text-4 { display: none; }
 
     .hero-eyebrow {
         font-size: 0.6rem;
@@ -2850,19 +2843,7 @@ a { text-decoration: none; }
     .hero-scroll-cue { display: none; }
     .hero-marquee    { display: none; }
     .hero-brand-badge { display: none; }
-    .hero-vignette   {
-        display: block;
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-        pointer-events: none;
-        background: linear-gradient(
-            to top,
-            rgba(10, 10, 10, 0.45) 0%,
-            rgba(10, 10, 10, 0.15) 35%,
-            transparent 65%
-        );
-    }
+    .hero-vignette   { display: none; }
 
     /* ── About Section — Balanced, Editorial ── */
     .about-section {

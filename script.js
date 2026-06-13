@@ -428,7 +428,7 @@ window.addEventListener('resize', () => {
 // 12. SCROLL LISTENER
 // ============================================================
 window.addEventListener('scroll', () => {
-    computeSequences();
+    if (!isMobile()) computeSequences();
     updateHeader();
 }, { passive: true });
 
@@ -475,23 +475,22 @@ const initActiveNavHighlight = () => {
 // ============================================================
 const isMobile = () => window.innerWidth <= 768;
 
-// ── Canvas sequence runs on all devices ──
-scaleAllCanvases();
-preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
-requestAnimationFrame(renderLoop);
+// ── Canvas sequence — desktop only; mobile uses static image ──
+if (!isMobile()) {
+    scaleAllCanvases();
+    preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
+    requestAnimationFrame(renderLoop);
 
-// ── Defer layout-dependent init until the full page has rendered ──
-// cacheOffsets reads scrollHeight/offsetTop which depend on CSS media queries
-// being applied. Running it inside rAF after window.load guarantees correct values.
-const initLayout = () => requestAnimationFrame(() => {
-    cacheOffsets();
-    computeSequences();
-});
-
-if (document.readyState === 'complete') {
-    initLayout();
-} else {
-    window.addEventListener('load', initLayout, { once: true });
+    // Defer layout-dependent init until the full page has rendered
+    const initLayout = () => requestAnimationFrame(() => {
+        cacheOffsets();
+        computeSequences();
+    });
+    if (document.readyState === 'complete') {
+        initLayout();
+    } else {
+        window.addEventListener('load', initLayout, { once: true });
+    }
 }
 
 initReveal();
