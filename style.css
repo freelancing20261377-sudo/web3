@@ -2768,18 +2768,7 @@ a { text-decoration: none; }
         padding: 0 28px;
     }
 
-    /* Dark gradient overlay — bottom half darkened for text legibility
-       This never touches the image file; it's a CSS layer over it */
-    .sticky-wrapper::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background:
-            linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.28) 45%, transparent 72%),
-            linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 30%);
-        z-index: 1;
-        pointer-events: none;
-    }
+    /* No gradient overlay — image shows clean */
 
     /* All hero overlay content sits above the gradient */
     .hero-overlay {
