@@ -143,12 +143,12 @@ const drawCover = (img, ctx, label = '') => {
     const ch = window.innerHeight;
 
     if (!img || !img.complete || img.naturalWidth === 0) {
-        ctx.fillStyle = '#1a1a1a';
+        // Luxury loading state — matches site palette, no debug text
+        const grad = ctx.createLinearGradient(0, 0, 0, ch);
+        grad.addColorStop(0, '#071F15');
+        grad.addColorStop(1, '#0B2E20');
+        ctx.fillStyle = grad;
         ctx.fillRect(0, 0, cw, ch);
-        ctx.fillStyle = '#C9A96E';
-        ctx.font = '14px Inter';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Loading${label ? ` ${label}` : ''}...`, cw / 2, ch / 2);
         return;
     }
 
@@ -475,12 +475,24 @@ const initActiveNavHighlight = () => {
 // ============================================================
 const isMobile = () => window.innerWidth <= 768;
 
-// Enable canvas sequence on all devices (desktop + mobile)
+// ── Canvas sequence runs on all devices ──
 scaleAllCanvases();
-cacheOffsets();
 preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
 requestAnimationFrame(renderLoop);
-computeSequences();
+
+// ── Defer layout-dependent init until the full page has rendered ──
+// cacheOffsets reads scrollHeight/offsetTop which depend on CSS media queries
+// being applied. Running it inside rAF after window.load guarantees correct values.
+const initLayout = () => requestAnimationFrame(() => {
+    cacheOffsets();
+    computeSequences();
+});
+
+if (document.readyState === 'complete') {
+    initLayout();
+} else {
+    window.addEventListener('load', initLayout, { once: true });
+}
 
 initReveal();
 initForm();
@@ -497,6 +509,15 @@ initActiveNavHighlight();
         if (wrapper) wrapper.classList.add('img-loaded');
     };
 
+    // On mobile, the hero is ~1850px tall (220vh @ 844px viewport).
+    // With only 200px rootMargin, section images below the hero don't start
+    // fetching until the user is 200px away — too late on slow 3G.
+    // 1800px bottom margin triggers loading at page-open on mobile so images
+    // are ready before the user scrolls to them.
+    const lazyMargin = window.matchMedia('(max-width: 768px)').matches
+        ? '0px 0px 1800px 0px'
+        : '200px';
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(({ isIntersecting, target }) => {
             if (!isIntersecting) return;
@@ -507,7 +528,7 @@ initActiveNavHighlight();
                 target.addEventListener('load', () => onLoad(target), { once: true });
             }
         });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: lazyMargin });
 
     document.querySelectorAll('img[loading="lazy"]').forEach(img => {
         if (img.complete && img.naturalWidth > 0) {
