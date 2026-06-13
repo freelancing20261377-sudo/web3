@@ -417,15 +417,10 @@ let resizeTimer;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-        if (!isMobile()) {
-            scaleAllCanvases();
-            cacheOffsets();
-            const f1 = Math.round(seq1.frame);
-            if (ctx1 && imgs1[f1]) drawCover(imgs1[f1], ctx1);
-        } else {
-            const seq = document.querySelector('.scroll-sequence-container');
-            if (seq) seq.style.removeProperty('height');
-        }
+        scaleAllCanvases();
+        cacheOffsets();
+        const f1 = Math.round(seq1.frame);
+        if (ctx1 && imgs1[f1]) drawCover(imgs1[f1], ctx1);
     }, 100);
 });
 
@@ -433,7 +428,7 @@ window.addEventListener('resize', () => {
 // 12. SCROLL LISTENER
 // ============================================================
 window.addEventListener('scroll', () => {
-    if (!isMobile()) computeSequences();
+    computeSequences();
     updateHeader();
 }, { passive: true });
 
@@ -480,13 +475,12 @@ const initActiveNavHighlight = () => {
 // ============================================================
 const isMobile = () => window.innerWidth <= 768;
 
-if (!isMobile()) {
-    scaleAllCanvases();
-    cacheOffsets();
-    preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
-    requestAnimationFrame(renderLoop);
-    computeSequences();
-}
+// Enable canvas sequence on all devices (desktop + mobile)
+scaleAllCanvases();
+cacheOffsets();
+preloadSeq(imgs1, heroFramePath, ctx1, canvas1, TOTAL_FRAMES_HERO);
+requestAnimationFrame(renderLoop);
+computeSequences();
 
 initReveal();
 initForm();
