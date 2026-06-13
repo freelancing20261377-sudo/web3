@@ -2589,27 +2589,27 @@ a { text-decoration: none; }
         align-items: center;
         justify-content: center;
         position: fixed;
-        right: -1px;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 9999;
-        writing-mode: vertical-rl;
+        top: 12px;
+        right: 12px;
+        z-index: 10000;
+        writing-mode: horizontal-tb;
         text-orientation: mixed;
-        padding: 20px 14px;
-        border-radius: 12px 0 0 12px;
-        background: rgba(11, 46, 32, 0.88);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(200, 169, 126, 0.35);
-        border-right: none;
-        box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+        padding: 12px 18px;
+        border-radius: 100px;
+        background: rgba(11, 46, 32, 0.92);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 0.5px solid rgba(200, 169, 126, 0.35);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         color: var(--accent-gold);
         font-family: var(--font-sans);
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 500;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
         text-decoration: none;
+        white-space: nowrap;
+        transform: none;
         transition: background 0.3s, box-shadow 0.3s;
     }
     .mobile-float-cta:active {
@@ -2626,7 +2626,8 @@ a { text-decoration: none; }
     .site-header {
         top: 12px;
         width: calc(100% - 24px);
-        padding: 0.5rem 1.2rem 0.5rem 1.4rem;
+        /* Extra right padding reserves space for the fixed Book Consultation button */
+        padding: 0.5rem 5rem 0.5rem 1.4rem;
         border-radius: 48px;
         background: rgba(11, 46, 32, 0.88);
         backdrop-filter: blur(32px) saturate(180%);
@@ -2636,7 +2637,7 @@ a { text-decoration: none; }
         transition: padding 0.4s var(--ease-luxury), background 0.4s, border-color 0.4s, box-shadow 0.4s;
     }
     .site-header.scrolled {
-        padding: 0.45rem 1.2rem 0.45rem 1.4rem;
+        padding: 0.45rem 5rem 0.45rem 1.4rem;
         background: rgba(11, 46, 32, 0.96);
         border-color: rgba(200, 169, 126, 0.45);
         box-shadow: var(--shadow-lg), var(--shadow-gold);
@@ -2786,8 +2787,17 @@ a { text-decoration: none; }
         color: #E8C88E;
         font-weight: 500;
         text-transform: uppercase;
-        margin-bottom: 18px;
+        margin: 0 auto 18px;
+        text-align: center;
+        width: 100%;
         text-shadow: 0 2px 12px rgba(0,0,0,0.8), 0 0 24px rgba(0,0,0,0.5);
+    }
+    /* Ensure hero lines are centered on mobile */
+    .hero-title .hero-line,
+    .hero-title .hero-line span {
+        display: block;
+        text-align: center;
+        width: 100%;
     }
     .hero-title {
         font-size: clamp(2.2rem, 9vw, 2.8rem);
@@ -2818,21 +2828,9 @@ a { text-decoration: none; }
     .hero-subtitle {
         display: none;
     }
-    .hero-actions {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 32px;
-    }
-    .hero-actions .btn {
-        width: 100%;
-        padding: 1rem 1.5rem;
-        font-size: 0.68rem;
-        letter-spacing: 0.2em;
-        border-radius: 100px;
-        text-align: center;
-    }
+    /* View Projects + Book Consultation removed from hero on mobile
+       — consultation is accessible via the top-right fixed button */
+    .hero-actions { display: none; }
     .hero-scroll-cue { display: none; }
     .hero-marquee    { display: none; }
     .hero-brand-badge { display: none; }
